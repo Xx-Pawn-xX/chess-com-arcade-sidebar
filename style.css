@@ -13,56 +13,120 @@ body {
   width: 100%;
   max-width: 650px;
   margin: auto;
-  padding: 12px;
+  padding: 10px;
 }
+
+
+/* =========================
+   EXPAND HUB
+========================= */
+
+.expand-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+
+  background: #ff2020;
+  color: white;
+
+  text-decoration: none;
+
+  padding: 10px;
+  margin-bottom: 10px;
+
+  border-radius: 7px;
+
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.expand-button:hover {
+  filter: brightness(1.2);
+}
+
+
+/* =========================
+   HEADER
+========================= */
 
 header {
   text-align: center;
+
   border-bottom: 1px solid #333;
+
   padding-bottom: 10px;
 }
 
 header h1 {
   margin: 5px 0;
+
   color: #ff2020;
+
   font-size: 24px;
 }
 
 header p {
   margin: 5px 0;
+
   color: #aaa;
+
   font-size: 13px;
 }
 
+
+/* =========================
+   TABS
+========================= */
+
 .tabs {
   display: flex;
+
   overflow-x: auto;
+
   gap: 5px;
+
   padding: 10px 0;
 }
 
 .tab {
   flex-shrink: 0;
+
   background: #171717;
+
   border: 1px solid #333;
+
   color: white;
+
   padding: 8px 12px;
+
   border-radius: 6px;
+
   cursor: pointer;
 }
 
 .tab:hover,
 .tab.active {
   background: #ff2020;
+
   border-color: #ff2020;
 }
 
+
+/* =========================
+   GAMES
+========================= */
+
 .game {
   display: none;
+
   text-align: center;
+
   background: #111;
+
   border: 1px solid #292929;
+
   border-radius: 10px;
+
   padding: 15px;
 }
 
@@ -72,73 +136,143 @@ header p {
 
 .game h2 {
   margin-top: 0;
+
   color: #ff2020;
 }
 
+
+/* =========================
+   BUTTONS
+========================= */
+
 .big-button {
   background: #ff2020;
+
   color: white;
+
   border: none;
+
   border-radius: 7px;
+
   padding: 11px 22px;
+
   font-weight: bold;
+
   cursor: pointer;
-  margin: 8px;
+
+  margin: 6px;
 }
 
 .big-button:hover {
   filter: brightness(1.2);
 }
 
-canvas {
-  max-width: 100%;
-  background: #090909;
-  border: 1px solid #333;
+.big-button:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+.stop-button {
+  background: #222;
+
+  color: #ff2020;
+
+  border: 1px solid #ff2020;
+
+  border-radius: 7px;
+
+  padding: 11px 22px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  margin: 6px;
+}
+
+.stop-button:hover {
+  background: #ff2020;
+  color: white;
 }
 
 
-/* RUNNER */
+/* =========================
+   RUNNER
+========================= */
 
 #runnerCanvas {
   display: block;
+
   margin: 10px auto;
+
+  max-width: 100%;
+
+  background: #090909;
+
+  border: 1px solid #333;
+}
+
+.runner-controls {
+  display: flex;
+
+  justify-content: center;
+
+  flex-wrap: wrap;
 }
 
 
-/* SORT */
+/* =========================
+   SORT
+========================= */
 
 #balls {
   display: flex;
+
   justify-content: center;
+
   gap: 10px;
+
   flex-wrap: wrap;
+
   margin: 15px;
 }
 
 .ball {
   width: 35px;
   height: 35px;
+
   border-radius: 50%;
+
   cursor: pointer;
+
   border: 3px solid transparent;
 }
 
 .ball.selected {
   border-color: white;
+
   transform: scale(1.15);
 }
 
 .zones {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
   gap: 5px;
 }
 
 .zone {
   padding: 15px 5px;
+
   border: 1px solid #444;
+
   border-radius: 6px;
+
   cursor: pointer;
+
   font-size: 11px;
 }
 
@@ -147,29 +281,47 @@ canvas {
 }
 
 
-/* TIME ATTACK */
+/* =========================
+   TIME ATTACK
+========================= */
+
+.time-info {
+  margin: 5px;
+}
 
 #targetArea {
   position: relative;
+
   height: 280px;
+
   margin: 10px 0;
+
   background: #080808;
+
   border: 1px solid #333;
+
   overflow: hidden;
 }
 
 .target {
   position: absolute;
+
   width: 35px;
   height: 35px;
+
   border-radius: 50%;
+
   background: #ff2020;
+
   cursor: pointer;
+
   border: 3px solid white;
 }
 
 
-/* SNAKE */
+/* =========================
+   SNAKE
+========================= */
 
 .snake-controls {
   margin: 10px;
@@ -177,49 +329,90 @@ canvas {
 
 .snake-controls button {
   background: #222;
+
   color: white;
+
   border: 1px solid #444;
+
   padding: 10px 15px;
+
   margin: 2px;
+
   border-radius: 5px;
+
+  cursor: pointer;
+}
+
+#snakeCanvas {
+  max-width: 100%;
+
+  background: #090909;
+
+  border: 1px solid #333;
 }
 
 
-/* REACTION */
+/* =========================
+   REACTION
+========================= */
 
 #reactionBox {
   height: 180px;
+
   margin-top: 15px;
+
   background: #222;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   font-size: 25px;
+
   font-weight: bold;
+
   cursor: pointer;
+
   border-radius: 8px;
 }
 
 
-/* MEMORY */
+/* =========================
+   MEMORY
+========================= */
 
 #memoryBoard {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
   gap: 7px;
+
   max-width: 400px;
+
   margin: 15px auto;
 }
 
 .memory-card {
   aspect-ratio: 1;
+
   background: #222;
+
   border: 1px solid #444;
+
   border-radius: 6px;
+
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   font-size: 28px;
+
   cursor: pointer;
 }
 
@@ -229,6 +422,7 @@ canvas {
 
 .memory-card.hidden::after {
   content: "?";
+
   color: white;
 }
 
@@ -237,30 +431,46 @@ canvas {
 }
 
 
-/* TIC TAC TOE */
+/* =========================
+   TIC TAC TOE
+========================= */
 
 #tttBoard {
   display: grid;
-  grid-template-columns: repeat(3, 80px);
+
+  grid-template-columns:
+    repeat(3, 80px);
+
   justify-content: center;
+
   gap: 5px;
+
   margin: 15px;
 }
 
 .ttt-cell {
   width: 80px;
   height: 80px;
+
   background: #222;
+
   border: 1px solid #444;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   font-size: 35px;
+
   cursor: pointer;
 }
 
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 500px) {
 
@@ -283,6 +493,16 @@ canvas {
   #snakeCanvas {
     width: 100%;
     height: auto;
+  }
+
+  #tttBoard {
+    grid-template-columns:
+      repeat(3, 65px);
+  }
+
+  .ttt-cell {
+    width: 65px;
+    height: 65px;
   }
 
 }
