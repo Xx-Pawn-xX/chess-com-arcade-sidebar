@@ -3,189 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Chess.com Arcade Hub</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="arcade">
+  <div class="arcade">
 
-  <header>
-    <h1>♞ ARCADE HUB</h1>
-    <p>Play. Compete. Repeat.</p>
-  </header>
+    <header>
+      <h1>♟ Chess.com Arcade Hub</h1>
+      <p>Mini games. Chess vibes. Maximum chaos.</p>
+    </header>
 
-  <div class="tabs">
-    <button class="tab active" data-game="runner">Runner</button>
-    <button class="tab" data-game="sort">Sort</button>
-    <button class="tab" data-game="lucky">Lucky</button>
-    <button class="tab" data-game="snake">Snake</button>
-    <button class="tab" data-game="reaction">React</button>
-    <button class="tab" data-game="cps">CPS</button>
-    <button class="tab" data-game="memory">Memory</button>
-    <button class="tab" data-game="ttt">XO</button>
-  </div>
-
-
-  <!-- RUNNER -->
-
-  <section class="game active-game" id="runner">
-    <h2>♞ Chess Runner</h2>
-
-    <div class="stats">
-      Score: <b id="runnerScore">0</b>
-      <span>Best: <b id="runnerBest">0</b></span>
-    </div>
-
-    <canvas id="runnerCanvas" width="600" height="220"></canvas>
-
-    <button id="jumpButton" class="main-button">JUMP</button>
-
-    <p class="hint">Jump over the spikes!</p>
-  </section>
+    <nav class="tabs">
+      <button class="tab active" data-game="runner">Runner</button>
+      <button class="tab" data-game="sort">Sort</button>
+      <button class="tab" data-game="timeattack">Time Attack</button>
+      <button class="tab" data-game="snake">Snake</button>
+      <button class="tab" data-game="reaction">Reaction</button>
+      <button class="tab" data-game="cps">CPS</button>
+      <button class="tab" data-game="memory">Memory</button>
+      <button class="tab" data-game="ttt">XO</button>
+    </nav>
 
 
-  <!-- COLOR SORT -->
+    <!-- RUNNER -->
 
-  <section class="game" id="sort">
-    <h2>Color Sort</h2>
+    <section id="runner" class="game active-game">
 
-    <p class="hint">Click a ball, then click the matching color box.</p>
+      <h2>♞ Chess Runner</h2>
 
-    <div id="balls"></div>
+      <div class="score">
+        Score: <span id="runnerScore">0</span>
+        &nbsp; | &nbsp;
+        Best: <span id="runnerBest">0</span>
+      </div>
 
-    <div class="sort-zones">
-      <button class="zone red-zone" data-color="red">RED</button>
-      <button class="zone blue-zone" data-color="blue">BLUE</button>
-      <button class="zone green-zone" data-color="green">GREEN</button>
-      <button class="zone yellow-zone" data-color="yellow">YELLOW</button>
-    </div>
+      <canvas
+        id="runnerCanvas"
+        width="500"
+        height="220">
+      </canvas>
 
-    <p id="sortMessage"></p>
+      <button id="jumpButton" class="big-button">
+        JUMP
+      </button>
 
-    <button class="main-button" id="newSortButton">
-      NEW GAME
-    </button>
-  </section>
+      <p>
+        Jump over the spikes!
+      </p>
 
-
-  <!-- LUCKY -->
-
-  <section class="game" id="lucky">
-    <h2>Lucky Emojis</h2>
-
-    <div class="slots">
-      <div class="slot" id="slot1">❓</div>
-      <div class="slot" id="slot2">❓</div>
-      <div class="slot" id="slot3">❓</div>
-    </div>
-
-    <p>Score: <b id="luckyScore">0</b></p>
-
-    <button class="main-button" id="spinButton">SPIN</button>
-
-    <p id="luckyMessage" class="hint">
-      Get a pair or a triple!
-    </p>
-  </section>
+    </section>
 
 
-  <!-- SNAKE -->
+    <!-- COLOR SORT -->
 
-  <section class="game" id="snake">
-    <h2>Snake</h2>
+    <section id="sort" class="game">
 
-    <p class="hint">Press START to spawn the snake.</p>
+      <h2>🎨 Color Sort</h2>
 
-    <p>Score: <b id="snakeScore">0</b></p>
+      <p>Pick a ball and put it in the matching zone.</p>
 
-    <canvas id="snakeCanvas" width="400" height="400"></canvas>
+      <div id="balls"></div>
 
-    <div class="controls">
-      <button data-snake="up">▲</button>
+      <div class="zones">
+
+        <div class="zone" data-color="red">RED</div>
+        <div class="zone" data-color="blue">BLUE</div>
+        <div class="zone" data-color="green">GREEN</div>
+        <div class="zone" data-color="yellow">YELLOW</div>
+
+      </div>
+
+      <p id="sortMessage"></p>
+
+      <button id="newSortButton" class="big-button">
+        NEW GAME
+      </button>
+
+    </section>
+
+
+    <!-- TIME ATTACK -->
+
+    <section id="timeattack" class="game">
+
+      <h2>⏱ Time Attack</h2>
+
+      <p>Click 30 targets as fast as possible!</p>
+
+      <div class="time-info">
+        Time:
+        <span id="timeAttackTime">0.00</span>s
+      </div>
+
+      <div class="time-info">
+        Points:
+        <span id="timeAttackScore">0</span>/30
+      </div>
+
+      <div id="targetArea"></div>
+
+      <button
+        id="timeAttackStart"
+        class="big-button">
+        START
+      </button>
+
+      <p id="timeAttackMessage"></p>
+
+      <p>
+        Best:
+        <span id="timeAttackBest">--</span>
+      </p>
+
+    </section>
+
+
+    <!-- SNAKE -->
+
+    <section id="snake" class="game">
+
+      <h2>🐍 Chess Snake</h2>
+
+      <p>Press Start to spawn the snake.</p>
+
+      <canvas
+        id="snakeCanvas"
+        width="400"
+        height="400">
+      </canvas>
+
+      <div class="snake-controls">
+
+        <button data-snake="up">▲</button>
+
+        <div>
+          <button data-snake="left">◀</button>
+          <button data-snake="down">▼</button>
+          <button data-snake="right">▶</button>
+        </div>
+
+      </div>
+
+      <p>
+        Score:
+        <span id="snakeScore">0</span>
+      </p>
+
+      <button id="snakeStart" class="big-button">
+        START
+      </button>
+
+    </section>
+
+
+    <!-- REACTION -->
+
+    <section id="reaction" class="game">
+
+      <h2>⚡ Reaction Test</h2>
+
+      <button
+        id="reactionStart"
+        class="big-button">
+        START
+      </button>
+
+      <div id="reactionBox">
+        PRESS START
+      </div>
+
+    </section>
+
+
+    <!-- CPS -->
+
+    <section id="cps" class="game">
+
+      <h2>🖱 Click Speed</h2>
+
+      <p>
+        Click as many times as possible in 5 seconds.
+      </p>
 
       <div>
-        <button data-snake="left">◀</button>
-        <button data-snake="down">▼</button>
-        <button data-snake="right">▶</button>
+        Clicks:
+        <span id="cpsClicks">0</span>
       </div>
-    </div>
 
-    <button class="main-button" id="snakeStart">
-      START
-    </button>
-  </section>
+      <div>
+        Time:
+        <span id="cpsTime">5</span>
+      </div>
 
+      <div>
+        CPS:
+        <span id="cpsResult">0</span>
+      </div>
 
-  <!-- REACTION -->
+      <button
+        id="cpsButton"
+        class="big-button">
+        CLICK TO START
+      </button>
 
-  <section class="game" id="reaction">
-    <h2>Reaction Test</h2>
-
-    <p class="hint">Press START. Wait. Then click!</p>
-
-    <div id="reactionBox">READY?</div>
-
-    <button class="main-button" id="reactionStart">
-      START
-    </button>
-  </section>
+    </section>
 
 
-  <!-- CPS -->
+    <!-- MEMORY -->
 
-  <section class="game" id="cps">
-    <h2>CPS Test</h2>
+    <section id="memory" class="game">
 
-    <p>
-      Time: <b id="cpsTime">5</b>s
-      <br>
-      Clicks: <b id="cpsClicks">0</b>
-      <br>
-      CPS: <b id="cpsResult">0</b>
-    </p>
+      <h2>🧠 Chess Memory</h2>
 
-    <button class="big-button" id="cpsButton">
-      CLICK TO START
-    </button>
-  </section>
+      <div id="memoryBoard"></div>
+
+      <button
+        id="memoryStart"
+        class="big-button">
+        NEW GAME
+      </button>
+
+    </section>
 
 
-  <!-- MEMORY -->
+    <!-- TIC TAC TOE -->
 
-  <section class="game" id="memory">
-    <h2>Memory Match</h2>
+    <section id="ttt" class="game">
 
-    <p class="hint">Find all matching pairs.</p>
+      <h2>❌ Chess XO</h2>
 
-    <div id="memoryBoard"></div>
+      <p id="tttStatus">X's turn</p>
 
-    <button class="main-button" id="memoryStart">
-      NEW GAME
-    </button>
-  </section>
+      <div id="tttBoard"></div>
 
+      <button
+        id="tttReset"
+        class="big-button">
+        NEW GAME
+      </button>
 
-  <!-- TIC TAC TOE -->
+    </section>
 
-  <section class="game" id="ttt">
-    <h2>Tic Tac Toe</h2>
+  </div>
 
-    <p id="tttStatus">X's turn</p>
-
-    <div id="tttBoard"></div>
-
-    <button class="main-button" id="tttReset">
-      RESET
-    </button>
-  </section>
-
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
