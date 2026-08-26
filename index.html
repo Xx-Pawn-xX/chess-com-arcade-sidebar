@@ -11,7 +11,6 @@
 
 <div class="arcade">
 
-  <!-- EXPAND HUB -->
   <a
     class="expand-button"
     href="https://xx-pawn-xx.github.io/chess-com-arcade-sidebar/"
@@ -26,47 +25,24 @@
     <p>Mini games. Chess vibes. Maximum chaos.</p>
   </header>
 
-
   <!-- TABS -->
-
   <nav class="tabs">
 
-    <button class="tab active" data-game="runner">
-      Runner
-    </button>
-
-    <button class="tab" data-game="sort">
-      Sort
-    </button>
-
-    <button class="tab" data-game="timeattack">
-      Time Attack
-    </button>
-
-    <button class="tab" data-game="snake">
-      Snake
-    </button>
-
-    <button class="tab" data-game="reaction">
-      Reaction
-    </button>
-
-    <button class="tab" data-game="cps">
-      CPS
-    </button>
-
-    <button class="tab" data-game="memory">
-      Memory
-    </button>
-
-    <button class="tab" data-game="ttt">
-      XO
-    </button>
+    <button class="tab active" data-game="runner">Runner</button>
+    <button class="tab" data-game="sort">Sort</button>
+    <button class="tab" data-game="timeattack">Time Attack</button>
+    <button class="tab" data-game="snake">Snake</button>
+    <button class="tab" data-game="reaction">Reaction</button>
+    <button class="tab" data-game="cps">CPS</button>
+    <button class="tab" data-game="memory">Memory</button>
+    <button class="tab" data-game="ttt">XO</button>
 
   </nav>
 
 
-  <!-- RUNNER -->
+  <!-- =========================
+       RUNNER
+  ========================= -->
 
   <section id="runner" class="game active-game">
 
@@ -80,94 +56,68 @@
       <span id="runnerBest">0</span>
     </div>
 
-    <canvas
-      id="runnerCanvas"
-      width="500"
-      height="220">
-    </canvas>
+    <canvas id="runnerCanvas" width="500" height="220"></canvas>
 
     <div class="runner-controls">
 
-      <button
-        id="runnerStart"
-        class="big-button">
+      <button id="runnerStart" class="big-button">
         START RUNNER
       </button>
 
-      <button
-        id="runnerStop"
-        class="stop-button">
+      <button id="runnerStop" class="stop-button">
         STOP RUNNER
       </button>
 
     </div>
 
-    <button
-      id="jumpButton"
-      class="big-button"
-      disabled>
+    <button id="jumpButton" class="big-button" disabled>
       JUMP
     </button>
 
-    <p>
-      Jump over the spikes!
-    </p>
+    <p>Jump over the spikes!</p>
 
   </section>
 
 
-  <!-- COLOR SORT -->
+  <!-- =========================
+       COLOR SORT
+  ========================= -->
 
   <section id="sort" class="game">
 
     <h2>🎨 Color Sort</h2>
 
-    <p>
-      Pick a ball and put it in the matching zone.
-    </p>
+    <p>Pick a ball and put it in the matching zone.</p>
 
     <div id="balls"></div>
 
     <div class="zones">
 
-      <div class="zone" data-color="red">
-        RED
-      </div>
-
-      <div class="zone" data-color="blue">
-        BLUE
-      </div>
-
-      <div class="zone" data-color="green">
-        GREEN
-      </div>
-
-      <div class="zone" data-color="yellow">
-        YELLOW
-      </div>
+      <div class="zone" data-color="red">RED</div>
+      <div class="zone" data-color="blue">BLUE</div>
+      <div class="zone" data-color="green">GREEN</div>
+      <div class="zone" data-color="yellow">YELLOW</div>
 
     </div>
 
     <p id="sortMessage"></p>
 
-    <button
-      id="newSortButton"
-      class="big-button">
+    <button id="newSortButton" class="big-button">
       NEW GAME
     </button>
 
   </section>
 
 
-  <!-- TIME ATTACK -->
+  <!-- =========================
+       TIME ATTACK
+  ========================= -->
 
   <section id="timeattack" class="game">
 
     <h2>⏱ Time Attack</h2>
 
-    <p>
-      Click 30 targets as fast as possible!
-    </p>
+    <p>Click 30 targets as fast as possible!</p>
 
     <div class="time-info">
       Time:
@@ -181,9 +131,7 @@
 
     <div id="targetArea"></div>
 
-    <button
-      id="timeAttackStart"
-      class="big-button">
+    <button id="timeAttackStart" class="big-button">
       START
     </button>
 
@@ -197,42 +145,26 @@
   </section>
 
 
-  <!-- SNAKE -->
+  <!-- =========================
+       SNAKE
+  ========================= -->
 
   <section id="snake" class="game">
 
     <h2>🐍 Chess Snake</h2>
 
-    <p>
-      Press Start to spawn the snake.
-    </p>
+    <p>Press Start to spawn the snake.</p>
 
-    <canvas
-      id="snakeCanvas"
-      width="400"
-      height="400">
-    </canvas>
+    <canvas id="snakeCanvas" width="400" height="400"></canvas>
 
     <div class="snake-controls">
 
-      <button data-snake="up">
-        ▲
-      </button>
+      <button data-snake="up">▲</button>
 
       <div>
-
-        <button data-snake="left">
-          ◀
-        </button>
-
-        <button data-snake="down">
-          ▼
-        </button>
-
-        <button data-snake="right">
-          ▶
-        </button>
-
+        <button data-snake="left">◀</button>
+        <button data-snake="down">▼</button>
+        <button data-snake="right">▶</button>
       </div>
 
     </div>
@@ -242,24 +174,22 @@
       <span id="snakeScore">0</span>
     </p>
 
-    <button
-      id="snakeStart"
-      class="big-button">
+    <button id="snakeStart" class="big-button">
       START
     </button>
 
   </section>
 
 
-  <!-- REACTION -->
+  <!-- =========================
+       REACTION
+  ========================= -->
 
   <section id="reaction" class="game">
 
     <h2>⚡ Reaction Test</h2>
 
-    <button
-      id="reactionStart"
-      class="big-button">
+    <button id="reactionStart" class="big-button">
       START
     </button>
 
@@ -270,15 +200,15 @@
   </section>
 
 
-  <!-- CPS -->
+  <!-- =========================
+       CPS
+  ========================= -->
 
   <section id="cps" class="game">
 
     <h2>🖱 Click Speed</h2>
 
-    <p>
-      Click as many times as possible in 5 seconds.
-    </p>
+    <p>Click as many times as possible in 5 seconds.</p>
 
     <div>
       Clicks:
@@ -295,16 +225,16 @@
       <span id="cpsResult">0</span>
     </div>
 
-    <button
-      id="cpsButton"
-      class="big-button">
+    <button id="cpsButton" class="big-button">
       CLICK TO START
     </button>
 
   </section>
 
 
-  <!-- MEMORY -->
+  <!-- =========================
+       MEMORY
+  ========================= -->
 
   <section id="memory" class="game">
 
@@ -312,30 +242,26 @@
 
     <div id="memoryBoard"></div>
 
-    <button
-      id="memoryStart"
-      class="big-button">
+    <button id="memoryStart" class="big-button">
       NEW GAME
     </button>
 
   </section>
 
 
-  <!-- TIC TAC TOE -->
+  <!-- =========================
+       TIC TAC TOE
+  ========================= -->
 
   <section id="ttt" class="game">
 
     <h2>❌ Chess XO</h2>
 
-    <p id="tttStatus">
-      X's turn
-    </p>
+    <p id="tttStatus">X's turn</p>
 
     <div id="tttBoard"></div>
 
-    <button
-      id="tttReset"
-      class="big-button">
+    <button id="tttReset" class="big-button">
       NEW GAME
     </button>
 
