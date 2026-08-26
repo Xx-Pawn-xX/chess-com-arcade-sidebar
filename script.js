@@ -88,12 +88,20 @@ function updateRunner() {
     jumping = false;
   }
 
-  if (Math.random() < 0.018) {
-    spikes.push({
-      x: runnerCanvas.width,
-      width: 20 + Math.random() * 15
-    });
-  }
+  const lastSpike = spikes[spikes.length - 1];
+
+const canSpawnSpike =
+  !lastSpike || lastSpike.x < 420;
+
+if (
+  canSpawnSpike &&
+  Math.random() < 0.018
+) {
+  spikes.push({
+    x: runnerCanvas.width,
+    width: 20 + Math.random() * 15
+  });
+}
 
   spikes.forEach(spike => {
     spike.x -= 6;
