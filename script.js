@@ -4,45 +4,75 @@
 
 let activeGame = "runner";
 
-const tabs = document.querySelectorAll(".tab");
-const games = document.querySelectorAll(".game");
+const tabs =
+  document.querySelectorAll(".tab");
+
+const games =
+  document.querySelectorAll(".game");
+
 
 tabs.forEach(tab => {
+
   tab.addEventListener("click", () => {
 
-    const gameName = tab.dataset.game;
+    const gameName =
+      tab.dataset.game;
+
 
     tabs.forEach(t =>
       t.classList.remove("active")
     );
 
+
     games.forEach(g =>
       g.classList.remove("active-game")
     );
 
+
     tab.classList.add("active");
+
 
     document
       .getElementById(gameName)
       .classList.add("active-game");
 
+
     activeGame = gameName;
 
-    /* Stop games when leaving them */
+
+    /* Stop Runner */
+
+    if (gameName !== "runner") {
+      stopRunner();
+    }
+
+
+    /* Stop Snake */
 
     if (gameName !== "snake") {
       clearInterval(snakeInterval);
     }
 
+
+    /* Stop CPS */
+
     if (gameName !== "cps") {
+
       clearInterval(cpsInterval);
+
       cpsRunning = false;
+
     }
+
+
+    /* Stop Time Attack */
 
     if (gameName !== "timeattack") {
       stopTimeAttack();
     }
+
   });
+
 });
 
 
@@ -51,55 +81,146 @@ tabs.forEach(tab => {
 ========================= */
 
 const runnerCanvas =
-  document.getElementById("runnerCanvas");
+  document.getElementById(
+    "runnerCanvas"
+  );
 
 const rctx =
   runnerCanvas.getContext("2d");
 
+
 let knightY = 160;
+
 let velocityY = 0;
+
 let jumping = false;
 
 let spikes = [];
+
 let runnerScore = 0;
+
+let runnerRunning = false;
+
 
 let runnerBest =
   Number(
-    localStorage.getItem("runnerBest")
+    localStorage.getItem(
+      "runnerBest"
+    )
   ) || 0;
+
 
 document.getElementById(
   "runnerBest"
-).textContent = runnerBest;
+).textContent =
+  runnerBest;
 
 
-/* JUMP */
+/* =========================
+   RUNNER START / STOP
+========================= */
 
-function jump() {
+function startRunner() {
 
   if (activeGame !== "runner")
     return;
 
-  if (!jumping) {
 
-    velocityY = -13;
-    jumping = true;
+  if (runnerRunning)
+    return;
 
-  }
+
+  runnerRunning = true;
+
+
+  document.getElementById(
+    "jumpButton"
+  ).disabled = false;
+
+
+  document.getElementById(
+    "runnerStart"
+  ).textContent =
+    "RUNNING...";
+
 }
 
 
-document
-  .getElementById("jumpButton")
-  .addEventListener(
-    "pointerdown",
-    event => {
+function stopRunner() {
 
-      event.preventDefault();
-      jump();
+  runnerRunning = false;
 
-    }
-  );
+  jumping = false;
+
+  velocityY = 0;
+
+
+  document.getElementById(
+    "jumpButton"
+  ).disabled = true;
+
+
+  document.getElementById(
+    "runnerStart"
+  ).textContent =
+    "START RUNNER";
+
+}
+
+
+document.getElementById(
+  "runnerStart"
+).addEventListener(
+  "click",
+  startRunner
+);
+
+
+document.getElementById(
+  "runnerStop"
+).addEventListener(
+  "click",
+  stopRunner
+);
+
+
+/* =========================
+   JUMP
+========================= */
+
+function jump() {
+
+  if (
+    activeGame !== "runner" ||
+    !runnerRunning
+  ) {
+    return;
+  }
+
+
+  if (!jumping) {
+
+    velocityY = -13;
+
+    jumping = true;
+
+  }
+
+}
+
+
+document.getElementById(
+  "jumpButton"
+).addEventListener(
+  "pointerdown",
+  event => {
+
+    event.preventDefault();
+
+    jump();
+
+  }
+);
 
 
 document.addEventListener(
@@ -108,6 +229,7 @@ document.addEventListener(
 
     if (
       activeGame === "runner" &&
+      runnerRunning &&
       (
         event.code === "Space" ||
         event.code === "ArrowUp"
@@ -115,58 +237,78 @@ document.addEventListener(
     ) {
 
       event.preventDefault();
+
       jump();
 
     }
+
   }
 );
 
 
-/* RESET */
+/* =========================
+   RESET RUNNER
+========================= */
 
 function resetRunner() {
 
   knightY = 160;
+
   velocityY = 0;
+
   jumping = false;
 
   spikes = [];
 
   runnerScore = 0;
 
+
   document.getElementById(
     "runnerScore"
-  ).textContent = "0";
+  ).textContent =
+    "0";
+
 }
 
 
-/* UPDATE */
+/* =========================
+   UPDATE RUNNER
+========================= */
 
 function updateRunner() {
 
-  if (activeGame !== "runner")
+  if (
+    activeGame !== "runner" ||
+    !runnerRunning
+  ) {
     return;
+  }
 
 
   /* GRAVITY */
 
   velocityY += 0.7;
+
   knightY += velocityY;
 
 
   if (knightY >= 160) {
 
     knightY = 160;
+
     velocityY = 0;
+
     jumping = false;
 
   }
 
 
-  /* DISPLAYED SCORE */
+  /* SCORE */
 
   const displayedScore =
-    Math.floor(runnerScore / 5);
+    Math.floor(
+      runnerScore / 5
+    );
 
 
   /* SPEED EVERY 100 SCORE */
@@ -176,14 +318,17 @@ function updateRunner() {
       displayedScore / 100
     );
 
+
   const runnerSpeed =
     6 + speedLevel;
 
 
-  /* FAIR SPIKE SPAWNING */
+  /* SPIKE SPAWN */
 
   const lastSpike =
-    spikes[spikes.length - 1];
+    spikes[
+      spikes.length - 1
+    ];
 
 
   if (
@@ -196,7 +341,8 @@ function updateRunner() {
 
     spikes.push({
 
-      x: runnerCanvas.width,
+      x:
+        runnerCanvas.width,
 
       width:
         20 +
@@ -207,16 +353,19 @@ function updateRunner() {
   }
 
 
-  /* MOVE */
+  /* MOVE SPIKES */
 
   spikes.forEach(
     spike => {
-      spike.x -= runnerSpeed;
+
+      spike.x -=
+        runnerSpeed;
+
     }
   );
 
 
-  /* REMOVE */
+  /* REMOVE OLD SPIKES */
 
   spikes =
     spikes.filter(
@@ -227,9 +376,12 @@ function updateRunner() {
 
   /* COLLISION */
 
-  for (const spike of spikes) {
+  for (
+    const spike of spikes
+  ) {
 
     const knightLeft = 65;
+
     const knightRight = 105;
 
     const knightBottom =
@@ -244,13 +396,13 @@ function updateRunner() {
     ) {
 
       gameOverRunner();
+
       return;
 
     }
+
   }
 
-
-  /* SCORE */
 
   runnerScore++;
 
@@ -259,10 +411,13 @@ function updateRunner() {
     "runnerScore"
   ).textContent =
     displayedScore;
+
 }
 
 
-/* DRAW */
+/* =========================
+   DRAW RUNNER
+========================= */
 
 function drawRunner() {
 
@@ -276,28 +431,37 @@ function drawRunner() {
 
   /* GROUND */
 
-  rctx.strokeStyle = "#555";
+  rctx.strokeStyle =
+    "#555";
+
 
   rctx.beginPath();
+
 
   rctx.moveTo(
     0,
     200
   );
 
+
   rctx.lineTo(
     runnerCanvas.width,
     200
   );
+
 
   rctx.stroke();
 
 
   /* KNIGHT */
 
-  rctx.font = "55px Arial";
+  rctx.font =
+    "55px Arial";
 
-  rctx.fillStyle = "white";
+
+  rctx.fillStyle =
+    "white";
+
 
   rctx.fillText(
     "♞",
@@ -317,10 +481,12 @@ function drawRunner() {
 
       rctx.beginPath();
 
+
       rctx.moveTo(
         spike.x,
         200
       );
+
 
       rctx.lineTo(
         spike.x +
@@ -328,20 +494,25 @@ function drawRunner() {
         160
       );
 
+
       rctx.lineTo(
         spike.x +
         spike.width,
         200
       );
 
+
       rctx.fill();
 
     }
   );
+
 }
 
 
-/* GAME OVER */
+/* =========================
+   RUNNER GAME OVER
+========================= */
 
 function gameOverRunner() {
 
@@ -351,9 +522,13 @@ function gameOverRunner() {
     );
 
 
-  if (score > runnerBest) {
+  if (
+    score > runnerBest
+  ) {
 
-    runnerBest = score;
+    runnerBest =
+      score;
+
 
     localStorage.setItem(
       "runnerBest",
@@ -369,37 +544,56 @@ function gameOverRunner() {
   }
 
 
+  stopRunner();
+
   resetRunner();
 
 
   setTimeout(
     () => {
 
-      alert(
-        "GAME OVER!\nScore: " +
-        score
-      );
+      if (
+        activeGame === "runner"
+      ) {
+
+        alert(
+          "GAME OVER!\nScore: " +
+          score
+        );
+
+      }
 
     },
     50
   );
+
 }
 
 
-/* LOOP */
+/* =========================
+   RUNNER LOOP
+========================= */
 
 function runnerLoop() {
 
   updateRunner();
 
-  if (activeGame === "runner") {
+
+  if (
+    activeGame === "runner"
+  ) {
+
     drawRunner();
+
   }
+
 
   requestAnimationFrame(
     runnerLoop
   );
+
 }
+
 
 runnerLoop();
 
@@ -460,8 +654,10 @@ function startSortGame() {
     ball.className =
       "ball";
 
+
     ball.style.background =
       color;
+
 
     ball.dataset.color =
       color;
@@ -472,7 +668,9 @@ function startSortGame() {
       () => {
 
         document
-          .querySelectorAll(".ball")
+          .querySelectorAll(
+            ".ball"
+          )
           .forEach(
             b =>
               b.classList.remove(
@@ -498,6 +696,7 @@ function startSortGame() {
     );
 
   }
+
 }
 
 
@@ -518,6 +717,7 @@ document
               "Pick a ball first!";
 
             return;
+
           }
 
 
@@ -566,14 +766,12 @@ document
   );
 
 
-document
-  .getElementById(
-    "newSortButton"
-  )
-  .addEventListener(
-    "click",
-    startSortGame
-  );
+document.getElementById(
+  "newSortButton"
+).addEventListener(
+  "click",
+  startSortGame
+);
 
 
 startSortGame();
@@ -584,9 +782,13 @@ startSortGame();
 ========================= */
 
 let timeAttackScore = 0;
+
 let timeAttackStart = 0;
+
 let timeAttackTimer = null;
+
 let timeAttackRunning = false;
+
 
 let timeAttackBest =
   Number(
@@ -602,7 +804,9 @@ const targetArea =
   );
 
 
-if (timeAttackBest > 0) {
+if (
+  timeAttackBest > 0
+) {
 
   document.getElementById(
     "timeAttackBest"
@@ -651,8 +855,11 @@ function startTimeAttack() {
     setInterval(
       () => {
 
-        if (!timeAttackRunning)
+        if (
+          !timeAttackRunning
+        ) {
           return;
+        }
 
 
         const elapsed =
@@ -676,11 +883,15 @@ function startTimeAttack() {
 
 function spawnTarget() {
 
-  if (!timeAttackRunning)
+  if (
+    !timeAttackRunning
+  ) {
     return;
+  }
 
 
-  targetArea.innerHTML = "";
+  targetArea.innerHTML =
+    "";
 
 
   const target =
@@ -696,6 +907,7 @@ function spawnTarget() {
   const maxX =
     targetArea.clientWidth -
     35;
+
 
   const maxY =
     targetArea.clientHeight -
@@ -721,8 +933,11 @@ function spawnTarget() {
       event.preventDefault();
 
 
-      if (!timeAttackRunning)
+      if (
+        !timeAttackRunning
+      ) {
         return;
+      }
 
 
       timeAttackScore++;
@@ -753,13 +968,17 @@ function spawnTarget() {
   targetArea.appendChild(
     target
   );
+
 }
 
 
 function finishTimeAttack() {
 
-  if (!timeAttackRunning)
+  if (
+    !timeAttackRunning
+  ) {
     return;
+  }
 
 
   const finalTime =
@@ -812,6 +1031,7 @@ function finishTimeAttack() {
       "s";
 
   }
+
 }
 
 
@@ -825,18 +1045,11 @@ function stopTimeAttack() {
     timeAttackTimer
   );
 
-  targetArea.innerHTML = "";
+
+  targetArea.innerHTML =
+    "";
+
 }
-
-
-document
-  .getElementById(
-    "timeAttackStart"
-  )
-  .addEventListener(
-    "click",
-    startTimeAttack
-  );
 
 
 /* =========================
@@ -848,6 +1061,7 @@ const snakeCanvas =
     "snakeCanvas"
   );
 
+
 const sctx =
   snakeCanvas.getContext(
     "2d"
@@ -855,9 +1069,11 @@ const sctx =
 
 
 let snake = null;
+
 let food = null;
 
 let snakeDX = 20;
+
 let snakeDY = 0;
 
 let snakeInterval = null;
@@ -902,6 +1118,7 @@ function startSnake() {
 
 
   snakeDX = 20;
+
   snakeDY = 0;
 
 
@@ -914,10 +1131,12 @@ function startSnake() {
   drawSnake();
 
 
+  /* Slightly slower snake */
+
   snakeInterval =
     setInterval(
       updateSnake,
-      185
+      160
     );
 
 }
@@ -937,6 +1156,7 @@ function changeSnakeDirection(
   ) {
 
     snakeDX = 0;
+
     snakeDY = -20;
 
   }
@@ -948,6 +1168,7 @@ function changeSnakeDirection(
   ) {
 
     snakeDX = 0;
+
     snakeDY = 20;
 
   }
@@ -959,6 +1180,7 @@ function changeSnakeDirection(
   ) {
 
     snakeDX = -20;
+
     snakeDY = 0;
 
   }
@@ -970,6 +1192,7 @@ function changeSnakeDirection(
   ) {
 
     snakeDX = 20;
+
     snakeDY = 0;
 
   }
@@ -999,27 +1222,22 @@ document
   );
 
 
-document
-  .getElementById(
-    "snakeStart"
-  )
-  .addEventListener(
-    "click",
-    startSnake
-  );
+document.getElementById(
+  "snakeStart"
+).addEventListener(
+  "click",
+  startSnake
+);
 
 
 function updateSnake() {
 
   if (
-    activeGame !== "snake"
+    activeGame !== "snake" ||
+    !snake
   ) {
     return;
   }
-
-
-  if (!snake)
-    return;
 
 
   const head = {
@@ -1034,8 +1252,6 @@ function updateSnake() {
 
   };
 
-
-  /* WALL */
 
   if (
     head.x < 0 ||
@@ -1061,8 +1277,6 @@ function updateSnake() {
 
   }
 
-
-  /* SELF */
 
   if (
     snake.some(
@@ -1094,8 +1308,6 @@ function updateSnake() {
     head
   );
 
-
-  /* FOOD */
 
   if (
     head.x === food.x &&
@@ -1137,9 +1349,7 @@ function drawSnake() {
     !snake ||
     !food
   ) {
-
     return;
-
   }
 
 
@@ -1180,7 +1390,9 @@ function drawSnake() {
 ========================= */
 
 let reactionReady = false;
+
 let reactionStartTime = 0;
+
 let reactionTimer = null;
 
 
@@ -1190,57 +1402,54 @@ const reactionBox =
   );
 
 
-document
-  .getElementById(
-    "reactionStart"
-  )
-  .addEventListener(
-    "click",
-    () => {
+document.getElementById(
+  "reactionStart"
+).addEventListener(
+  "click",
+  () => {
 
-      reactionReady =
-        false;
+    reactionReady = false;
 
 
-      reactionBox.style.background =
-        "#222";
+    reactionBox.style.background =
+      "#222";
 
 
-      reactionBox.textContent =
-        "WAIT...";
+    reactionBox.textContent =
+      "WAIT...";
 
 
-      clearTimeout(
-        reactionTimer
+    clearTimeout(
+      reactionTimer
+    );
+
+
+    reactionTimer =
+      setTimeout(
+        () => {
+
+          reactionReady =
+            true;
+
+
+          reactionStartTime =
+            performance.now();
+
+
+          reactionBox.style.background =
+            "#ff2020";
+
+
+          reactionBox.textContent =
+            "CLICK!";
+
+        },
+        1000 +
+        Math.random() * 3000
       );
 
-
-      reactionTimer =
-        setTimeout(
-          () => {
-
-            reactionReady =
-              true;
-
-
-            reactionStartTime =
-              performance.now();
-
-
-            reactionBox.style.background =
-              "#ff2020";
-
-
-            reactionBox.textContent =
-              "CLICK!";
-
-          },
-          1000 +
-          Math.random() * 3000
-        );
-
-    }
-  );
+  }
+);
 
 
 reactionBox.addEventListener(
@@ -1256,8 +1465,7 @@ reactionBox.addEventListener(
       reactionStartTime;
 
 
-    reactionReady =
-      false;
+    reactionReady = false;
 
 
     reactionBox.style.background =
@@ -1277,120 +1485,116 @@ reactionBox.addEventListener(
 ========================= */
 
 let cpsRunning = false;
+
 let cpsClicks = 0;
+
 let cpsTime = 5;
+
 let cpsInterval = null;
 
 
-document
-  .getElementById(
-    "cpsButton"
-  )
-  .addEventListener(
-    "pointerdown",
-    event => {
+document.getElementById(
+  "cpsButton"
+).addEventListener(
+  "pointerdown",
+  event => {
 
-      event.preventDefault();
+    event.preventDefault();
 
 
-      if (!cpsRunning) {
+    if (!cpsRunning) {
 
-        cpsRunning =
-          true;
+      cpsRunning = true;
 
+      cpsClicks = 1;
 
-        cpsClicks =
-          1;
-
-
-        cpsTime =
-          5;
+      cpsTime = 5;
 
 
-        document.getElementById(
-          "cpsClicks"
-        ).textContent =
-          cpsClicks;
+      document.getElementById(
+        "cpsClicks"
+      ).textContent =
+        cpsClicks;
 
 
-        document.getElementById(
-          "cpsTime"
-        ).textContent =
-          cpsTime;
+      document.getElementById(
+        "cpsTime"
+      ).textContent =
+        cpsTime;
 
 
-        document.getElementById(
-          "cpsResult"
-        ).textContent =
-          "0";
+      document.getElementById(
+        "cpsResult"
+      ).textContent =
+        "0";
 
 
-        document.getElementById(
-          "cpsButton"
-        ).textContent =
-          "CLICK FAST!";
+      document.getElementById(
+        "cpsButton"
+      ).textContent =
+        "CLICK FAST!";
 
 
-        cpsInterval =
-          setInterval(
-            () => {
+      cpsInterval =
+        setInterval(
+          () => {
 
-              cpsTime--;
+            cpsTime--;
+
+
+            document.getElementById(
+              "cpsTime"
+            ).textContent =
+              cpsTime;
+
+
+            if (
+              cpsTime <= 0
+            ) {
+
+              clearInterval(
+                cpsInterval
+              );
+
+
+              cpsRunning =
+                false;
 
 
               document.getElementById(
-                "cpsTime"
+                "cpsResult"
               ).textContent =
-                cpsTime;
+                (
+                  cpsClicks / 5
+                ).toFixed(1);
 
 
-              if (
-                cpsTime <= 0
-              ) {
+              document.getElementById(
+                "cpsButton"
+              ).textContent =
+                "CLICK TO START";
 
-                clearInterval(
-                  cpsInterval
-                );
+            }
 
-
-                cpsRunning =
-                  false;
-
-
-                document.getElementById(
-                  "cpsResult"
-                ).textContent =
-                  (
-                    cpsClicks / 5
-                  ).toFixed(1);
+          },
+          1000
+        );
 
 
-                document.getElementById(
-                  "cpsButton"
-                ).textContent =
-                  "CLICK TO START";
+    } else {
 
-              }
-
-            },
-            1000
-          );
+      cpsClicks++;
 
 
-      } else {
-
-        cpsClicks++;
-
-
-        document.getElementById(
-          "cpsClicks"
-        ).textContent =
-          cpsClicks;
-
-      }
+      document.getElementById(
+        "cpsClicks"
+      ).textContent =
+        cpsClicks;
 
     }
-  );
+
+  }
+);
 
 
 /* =========================
@@ -1398,6 +1602,7 @@ document
 ========================= */
 
 const memorySymbols = [
+
   "♟",
   "♞",
   "♜",
@@ -1406,10 +1611,12 @@ const memorySymbols = [
   "💎",
   "⚡",
   "🚀"
+
 ];
 
 
 let flipped = [];
+
 let memoryLocked = false;
 
 
@@ -1421,7 +1628,8 @@ function startMemory() {
     );
 
 
-  board.innerHTML = "";
+  board.innerHTML =
+    "";
 
 
   let cards = [
@@ -1473,6 +1681,7 @@ function startMemory() {
 
 
   flipped = [];
+
   memoryLocked = false;
 
 }
@@ -1538,6 +1747,7 @@ function flipCard() {
 
 
         flipped = [];
+
         memoryLocked = false;
 
       },
@@ -1549,14 +1759,12 @@ function flipCard() {
 }
 
 
-document
-  .getElementById(
-    "memoryStart"
-  )
-  .addEventListener(
-    "click",
-    startMemory
-  );
+document.getElementById(
+  "memoryStart"
+).addEventListener(
+  "click",
+  startMemory
+);
 
 
 startMemory();
@@ -1567,6 +1775,7 @@ startMemory();
 ========================= */
 
 let tttPlayer = "X";
+
 let tttGameActive = true;
 
 
@@ -1592,10 +1801,12 @@ function resetTTT() {
     );
 
 
-  board.innerHTML = "";
+  board.innerHTML =
+    "";
 
 
   tttPlayer = "X";
+
   tttGameActive = true;
 
 
@@ -1729,14 +1940,12 @@ function playTTT() {
 }
 
 
-document
-  .getElementById(
-    "tttReset"
-  )
-  .addEventListener(
-    "click",
-    resetTTT
-  );
+document.getElementById(
+  "tttReset"
+).addEventListener(
+  "click",
+  resetTTT
+);
 
 
 resetTTT();
