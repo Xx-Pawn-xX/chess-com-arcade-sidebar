@@ -100,9 +100,17 @@ if (
   });
 }
 
-  spikes.forEach(spike => {
-    spike.x -= 6;
+const lastSpike = spikes[spikes.length - 1];
+
+if (
+  (!lastSpike || lastSpike.x < 330) &&
+  Math.random() < 0.012
+) {
+  spikes.push({
+    x: runnerCanvas.width,
+    width: 20 + Math.random() * 12
   });
+}
 
   spikes = spikes.filter(spike => spike.x > -50);
 
