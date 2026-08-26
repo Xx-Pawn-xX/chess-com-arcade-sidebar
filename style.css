@@ -4,57 +4,51 @@
 
 body {
   margin: 0;
-  background: #090909;
+  background: #080808;
   color: white;
   font-family: Arial, sans-serif;
 }
 
 .arcade {
   width: 100%;
-  max-width: 700px;
+  max-width: 650px;
   margin: auto;
-  min-height: 100vh;
-  background: #111;
   padding: 12px;
-  border-left: 2px solid #ff2020;
-  border-right: 2px solid #ff2020;
 }
 
 header {
   text-align: center;
-  border-bottom: 2px solid #ff2020;
+  border-bottom: 1px solid #333;
   padding-bottom: 10px;
-  margin-bottom: 10px;
 }
 
 header h1 {
-  margin: 0;
-  color: #ff3030;
-  font-size: 30px;
+  margin: 5px 0;
+  color: #ff2020;
+  font-size: 24px;
 }
 
 header p {
-  margin: 5px 0 0;
+  margin: 5px 0;
   color: #aaa;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .tabs {
   display: flex;
-  flex-wrap: wrap;
+  overflow-x: auto;
   gap: 5px;
-  justify-content: center;
-  margin-bottom: 12px;
+  padding: 10px 0;
 }
 
 .tab {
-  background: #222;
+  flex-shrink: 0;
+  background: #171717;
+  border: 1px solid #333;
   color: white;
-  border: 1px solid #444;
-  padding: 8px 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 13px;
 }
 
 .tab:hover,
@@ -66,87 +60,64 @@ header p {
 .game {
   display: none;
   text-align: center;
-  animation: fade 0.2s ease;
+  background: #111;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  padding: 15px;
 }
 
 .active-game {
   display: block;
 }
 
-@keyframes fade {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 .game h2 {
-  color: #ff3030;
-  margin: 10px 0;
+  margin-top: 0;
+  color: #ff2020;
 }
 
-.stats {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-bottom: 8px;
-}
-
-.hint {
-  color: #aaa;
-  font-size: 14px;
-}
-
-.main-button,
 .big-button {
   background: #ff2020;
   color: white;
   border: none;
-  padding: 12px 22px;
-  margin: 10px;
-  border-radius: 6px;
+  border-radius: 7px;
+  padding: 11px 22px;
   font-weight: bold;
   cursor: pointer;
-  touch-action: manipulation;
+  margin: 8px;
 }
 
-.main-button:hover,
 .big-button:hover {
-  background: #ff5050;
-}
-
-.big-button {
-  width: 80%;
-  min-height: 100px;
-  font-size: 20px;
+  filter: brightness(1.2);
 }
 
 canvas {
   max-width: 100%;
-  background: #050505;
-  border: 2px solid #333;
-  border-radius: 5px;
+  background: #090909;
+  border: 1px solid #333;
+}
+
+
+/* RUNNER */
+
+#runnerCanvas {
   display: block;
   margin: 10px auto;
 }
 
-/* COLOR SORT */
+
+/* SORT */
 
 #balls {
-  min-height: 90px;
   display: flex;
   justify-content: center;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 12px;
-  padding: 10px;
+  margin: 15px;
 }
 
 .ball {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   cursor: pointer;
   border: 3px solid transparent;
@@ -157,99 +128,85 @@ canvas {
   transform: scale(1.15);
 }
 
-.sort-zones {
+.zones {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  max-width: 400px;
-  margin: auto;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
 }
 
 .zone {
-  color: white;
-  border: 2px solid #555;
-  padding: 15px;
-  font-weight: bold;
-  border-radius: 5px;
+  padding: 15px 5px;
+  border: 1px solid #444;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 11px;
 }
 
-.red-zone {
-  background: #9b111e;
+.zone:hover {
+  border-color: #ff2020;
 }
 
-.blue-zone {
-  background: #124d9b;
+
+/* TIME ATTACK */
+
+#targetArea {
+  position: relative;
+  height: 280px;
+  margin: 10px 0;
+  background: #080808;
+  border: 1px solid #333;
+  overflow: hidden;
 }
 
-.green-zone {
-  background: #167c3a;
+.target {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #ff2020;
+  cursor: pointer;
+  border: 3px solid white;
 }
 
-.yellow-zone {
-  background: #a88900;
-}
-
-/* LUCKY */
-
-.slots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px;
-}
-
-.slot {
-  width: 75px;
-  height: 75px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #222;
-  border: 2px solid #ff2020;
-  border-radius: 8px;
-  font-size: 40px;
-}
 
 /* SNAKE */
 
-.controls {
-  margin: 10px auto;
+.snake-controls {
+  margin: 10px;
 }
 
-.controls button {
+.snake-controls button {
   background: #222;
   color: white;
-  border: 1px solid #555;
-  font-size: 20px;
-  padding: 10px 18px;
-  margin: 3px;
+  border: 1px solid #444;
+  padding: 10px 15px;
+  margin: 2px;
   border-radius: 5px;
-  cursor: pointer;
 }
+
 
 /* REACTION */
 
 #reactionBox {
-  width: min(400px, 90%);
   height: 180px;
-  margin: 15px auto;
+  margin-top: 15px;
   background: #222;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 25px;
-  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  user-select: none;
+  border-radius: 8px;
 }
+
 
 /* MEMORY */
 
 #memoryBoard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 7px;
   max-width: 400px;
   margin: 15px auto;
 }
@@ -257,62 +214,70 @@ canvas {
 .memory-card {
   aspect-ratio: 1;
   background: #222;
-  border: 2px solid #ff2020;
+  border: 1px solid #444;
   border-radius: 6px;
-  font-size: 30px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  font-size: 28px;
   cursor: pointer;
 }
 
 .memory-card.hidden {
   color: transparent;
-  background: #333;
 }
 
 .memory-card.matched {
-  visibility: hidden;
+  border-color: #ff2020;
 }
+
 
 /* TIC TAC TOE */
 
 #tttBoard {
   display: grid;
-  grid-template-columns: repeat(3, 90px);
-  gap: 5px;
+  grid-template-columns: repeat(3, 80px);
   justify-content: center;
-  margin: 15px auto;
+  gap: 5px;
+  margin: 15px;
 }
 
 .ttt-cell {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   background: #222;
-  border: 2px solid #ff2020;
+  border: 1px solid #444;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 45px;
+  font-size: 35px;
   cursor: pointer;
 }
 
+
+/* MOBILE */
+
 @media (max-width: 500px) {
+
   .arcade {
-    padding: 8px;
+    padding: 7px;
   }
 
   header h1 {
-    font-size: 25px;
+    font-size: 20px;
   }
 
-  .tab {
-    padding: 7px;
-    font-size: 12px;
+  .game {
+    padding: 10px;
+  }
+
+  #runnerCanvas {
+    width: 100%;
   }
 
   #snakeCanvas {
     width: 100%;
     height: auto;
   }
+
 }
