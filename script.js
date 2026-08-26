@@ -3,9 +3,9 @@
    ========================================================= */
 
 
-/* =========================================================
+/* =========================
    TABS
-   ========================================================= */
+========================= */
 
 let activeGame = "runner";
 
@@ -14,7 +14,6 @@ const games = document.querySelectorAll(".game");
 
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
-
     const gameName = tab.dataset.game;
 
     tabs.forEach(t => t.classList.remove("active"));
@@ -30,19 +29,18 @@ tabs.forEach(tab => {
 
     activeGame = gameName;
 
-    /* Stop games that should not continue in background */
+    /* Stop games when leaving their tab */
 
     if (gameName !== "runner") {
       stopRunner();
     }
 
     if (gameName !== "snake") {
-      clearInterval(snakeInterval);
+      stopSnake();
     }
 
     if (gameName !== "cps") {
-      clearInterval(cpsInterval);
-      cpsRunning = false;
+      stopCPS();
     }
 
     if (gameName !== "timeattack") {
@@ -52,9 +50,9 @@ tabs.forEach(tab => {
 });
 
 
-/* =========================================================
+/* =========================
    CHESS RUNNER
-   ========================================================= */
+========================= */
 
 const runnerCanvas = document.getElementById("runnerCanvas");
 const rctx = runnerCanvas.getContext("2d");
@@ -65,7 +63,6 @@ let jumping = false;
 
 let spikes = [];
 let runnerScore = 0;
-
 let runnerRunning = false;
 
 let runnerBest =
@@ -74,24 +71,15 @@ let runnerBest =
 document.getElementById("runnerBest").textContent = runnerBest;
 
 
-/* -------------------------
-   START RUNNER
-------------------------- */
+/* =========================
+   RUNNER START
+========================= */
 
 function startRunner() {
 
   if (activeGame !== "runner") return;
+
   if (runnerRunning) return;
-
-  /* Start completely fresh */
-
-  knightY = 160;
-  velocityY = 0;
-  jumping = false;
-  spikes = [];
-  runnerScore = 0;
-
-  document.getElementById("runnerScore").textContent = "0";
 
   runnerRunning = true;
 
@@ -102,64 +90,60 @@ function startRunner() {
 }
 
 
-/* -------------------------
-   STOP RUNNER
-------------------------- */
+/* =========================
+   RUNNER STOP
+========================= */
 
 function stopRunner() {
 
   runnerRunning = false;
 
-  knightY = 160;
-  velocityY = 0;
   jumping = false;
-
-  spikes = [];
+  velocityY = 0;
 
   document.getElementById("jumpButton").disabled = true;
 
   document.getElementById("runnerStart").textContent =
     "START RUNNER";
-
-  drawRunner();
 }
 
 
-document
-  .getElementById("runnerStart")
+document.getElementById("runnerStart")
   .addEventListener("click", startRunner);
 
-
-document
-  .getElementById("runnerStop")
+document.getElementById("runnerStop")
   .addEventListener("click", stopRunner);
 
 
-/* -------------------------
+/* =========================
    JUMP
-------------------------- */
+========================= */
 
 function jump() {
 
-  if (activeGame !== "runner") return;
-  if (!runnerRunning) return;
+  if (
+    activeGame !== "runner" ||
+    !runnerRunning
+  ) {
+    return;
+  }
 
   if (!jumping) {
 
     velocityY = -13;
-
     jumping = true;
+
   }
 }
 
 
-document
-  .getElementById("jumpButton")
+document.getElementById("jumpButton")
   .addEventListener("pointerdown", event => {
 
     event.preventDefault();
 
     jump();
+
   });
 
 
@@ -177,69 +161,88 @@ document.addEventListener("keydown", event => {
     event.preventDefault();
 
     jump();
+
   }
+
 });
 
 
-/* -------------------------
+/* =========================
+   RESET RUNNER
+========================= */
+
+function resetRunner() {
+
+  knightY = 160;
+  velocityY = 0;
+  jumping = false;
+
+  spikes = [];
+
+  runnerScore = 0;
+
+  document.getElementById("runnerScore").textContent = "0";
+}
+
+
+/* =========================
    UPDATE RUNNER
-------------------------- */
+========================= */
 
 function updateRunner() {
 
-  if (!runnerRunning) return;
-  if (activeGame !== "runner") return;
+  if (
+    activeGame !== "runner" ||
+    !runnerRunning
+  ) {
+    return;
+  }
 
 
   /* Gravity */
 
   velocityY += 0.7;
-
   knightY += velocityY;
 
-
-  /* Ground */
 
   if (knightY >= 160) {
 
     knightY = 160;
-
     velocityY = 0;
-
     jumping = false;
+
   }
 
 
-  /* Current score */
-
-  const score = Math.floor(runnerScore / 5);
-
-
-  /* Speed increases every 100 score */
-
-  const speedLevel = Math.floor(score / 100);
-
-  const runnerSpeed = 6 + speedLevel;
+  const displayedScore =
+    Math.floor(runnerScore / 5);
 
 
-  /* -------------------------
-     SPIKE SPAWNING
-  ------------------------- */
+  /* Speed increases every 100 points */
+
+  const speedLevel =
+    Math.floor(displayedScore / 100);
+
+  const runnerSpeed =
+    6 + speedLevel;
+
+
+  /* =========================
+     SPIKE SPAWN
+  ========================= */
 
   const lastSpike =
-    spikes.length > 0
-      ? spikes[spikes.length - 1]
-      : null;
+    spikes[spikes.length - 1];
 
 
   /*
-     Keep at least 330px between
-     spike groups so impossible
-     double spikes don't happen.
+     Keep a large minimum distance
+     between spikes so combinations
+     are actually possible.
   */
 
   if (
-    (!lastSpike || lastSpike.x < 330) &&
+    (!lastSpike || lastSpike.x < 360) &&
     Math.random() < 0.012
   ) {
 
@@ -250,6 +253,7 @@ function updateRunner() {
       width: 20 + Math.random() * 12
 
     });
+
   }
 
 
@@ -264,19 +268,21 @@ function updateRunner() {
 
   /* Remove old spikes */
 
-  spikes = spikes.filter(spike => spike.x > -50);
+  spikes =
+    spikes.filter(spike =>
+      spike.x > -50
+    );
 
 
-  /* -------------------------
-     COLLISION
-  ------------------------- */
+  /* Collision */
 
   for (const spike of spikes) {
 
     const knightLeft = 65;
     const knightRight = 105;
 
-    const knightBottom = knightY + 40;
+    const knightBottom =
+      knightY + 40;
 
 
     if (
@@ -288,22 +294,25 @@ function updateRunner() {
       gameOverRunner();
 
       return;
+
     }
+
   }
 
 
-  /* Score */
-
   runnerScore++;
 
-  document.getElementById("runnerScore").textContent =
+
+  document.getElementById("runnerScore")
+    .textContent =
     Math.floor(runnerScore / 5);
+
 }
 
 
-/* -------------------------
+/* =========================
    DRAW RUNNER
-------------------------- */
+========================= */
 
 function drawRunner() {
 
@@ -321,7 +330,10 @@ function drawRunner() {
 
   rctx.beginPath();
 
-  rctx.moveTo(0, 200);
+  rctx.moveTo(
+    0,
+    200
+  );
 
   rctx.lineTo(
     runnerCanvas.width,
@@ -370,16 +382,15 @@ function drawRunner() {
     rctx.fill();
 
   });
+
 }
 
 
-/* -------------------------
+/* =========================
    GAME OVER
-------------------------- */
+========================= */
 
 function gameOverRunner() {
-
-  if (!runnerRunning) return;
 
   const score =
     Math.floor(runnerScore / 5);
@@ -394,13 +405,16 @@ function gameOverRunner() {
       runnerBest
     );
 
-    document.getElementById(
-      "runnerBest"
-    ).textContent = runnerBest;
+    document.getElementById("runnerBest")
+      .textContent =
+      runnerBest;
+
   }
 
 
   stopRunner();
+
+  resetRunner();
 
 
   setTimeout(() => {
@@ -408,41 +422,41 @@ function gameOverRunner() {
     if (activeGame === "runner") {
 
       alert(
-        "GAME OVER!\nScore: " + score
+        "GAME OVER!\nScore: " +
+        score
       );
+
     }
 
   }, 50);
+
 }
 
 
-/* -------------------------
+/* =========================
    RUNNER LOOP
-------------------------- */
+========================= */
 
 function runnerLoop() {
 
-  if (
-    activeGame === "runner" &&
-    runnerRunning
-  ) {
+  updateRunner();
 
-    updateRunner();
+  if (activeGame === "runner") {
 
     drawRunner();
 
   }
 
   requestAnimationFrame(runnerLoop);
-}
 
+}
 
 runnerLoop();
 
 
-/* =========================================================
+/* =========================
    COLOR SORT
-   ========================================================= */
+========================= */
 
 const colors = [
   "red",
@@ -463,9 +477,8 @@ function startSortGame() {
 
   selectedBall = null;
 
-  document.getElementById(
-    "sortMessage"
-  ).textContent = "";
+  document.getElementById("sortMessage")
+    .textContent = "";
 
 
   for (let i = 0; i < 8; i++) {
@@ -481,7 +494,6 @@ function startSortGame() {
     const ball =
       document.createElement("div");
 
-
     ball.className = "ball";
 
     ball.style.background = color;
@@ -491,12 +503,10 @@ function startSortGame() {
 
     ball.addEventListener("click", () => {
 
-      document
-        .querySelectorAll(".ball")
+      document.querySelectorAll(".ball")
         .forEach(b =>
           b.classList.remove("selected")
         );
-
 
       selectedBall = ball;
 
@@ -506,24 +516,25 @@ function startSortGame() {
 
 
     balls.appendChild(ball);
+
   }
+
 }
 
 
-document
-  .querySelectorAll(".zone")
+document.querySelectorAll(".zone")
   .forEach(zone => {
 
     zone.addEventListener("click", () => {
 
       if (!selectedBall) {
 
-        document.getElementById(
-          "sortMessage"
-        ).textContent =
+        document.getElementById("sortMessage")
+          .textContent =
           "Pick a ball first!";
 
         return;
+
       }
 
 
@@ -536,9 +547,8 @@ document
 
         selectedBall = null;
 
-        document.getElementById(
-          "sortMessage"
-        ).textContent =
+        document.getElementById("sortMessage")
+          .textContent =
           "Correct!";
 
 
@@ -547,18 +557,18 @@ document
             .length === 0
         ) {
 
-          document.getElementById(
-            "sortMessage"
-          ).textContent =
+          document.getElementById("sortMessage")
+            .textContent =
             "YOU SORTED EVERYTHING!";
+
         }
 
       } else {
 
-        document.getElementById(
-          "sortMessage"
-        ).textContent =
+        document.getElementById("sortMessage")
+          .textContent =
           "Wrong color!";
+
       }
 
     });
@@ -566,20 +576,18 @@ document
   });
 
 
-document
-  .getElementById("newSortButton")
+document.getElementById("newSortButton")
   .addEventListener(
     "click",
     startSortGame
   );
 
-
 startSortGame();
 
 
-/* =========================================================
+/* =========================
    TIME ATTACK
-   ========================================================= */
+========================= */
 
 let timeAttackScore = 0;
 let timeAttackStart = 0;
@@ -589,30 +597,36 @@ let timeAttackRunning = false;
 
 let timeAttackBest =
   Number(
-    localStorage.getItem(
-      "timeAttackBest"
-    )
+    localStorage.getItem("timeAttackBest")
   ) || 0;
 
 
 const targetArea =
-  document.getElementById(
-    "targetArea"
-  );
+  document.getElementById("targetArea");
 
 
 if (timeAttackBest > 0) {
 
-  document.getElementById(
-    "timeAttackBest"
-  ).textContent =
+  document.getElementById("timeAttackBest")
+    .textContent =
     timeAttackBest.toFixed(2) + "s";
+
 }
 
 
+/* =========================
+   START TIME ATTACK
+========================= */
+
 function startTimeAttack() {
 
+  if (activeGame !== "timeattack") {
+    return;
+  }
+
+
   stopTimeAttack();
+
 
   timeAttackScore = 0;
 
@@ -641,144 +655,4 @@ function startTimeAttack() {
 
 
   timeAttackTimer =
-    setInterval(() => {
-
-      if (!timeAttackRunning) return;
-
-      const elapsed =
-        (
-          performance.now() -
-          timeAttackStart
-        ) / 1000;
-
-
-      document.getElementById(
-        "timeAttackTime"
-      ).textContent =
-        elapsed.toFixed(2);
-
-    }, 20);
-}
-
-
-function spawnTarget() {
-
-  if (!timeAttackRunning) return;
-
-
-  targetArea.innerHTML = "";
-
-
-  const target =
-    document.createElement("div");
-
-
-  target.className = "target";
-
-
-  const maxX =
-    Math.max(
-      0,
-      targetArea.clientWidth - 35
-    );
-
-
-  const maxY =
-    Math.max(
-      0,
-      targetArea.clientHeight - 35
-    );
-
-
-  target.style.left =
-    Math.random() * maxX + "px";
-
-
-  target.style.top =
-    Math.random() * maxY + "px";
-
-
-  target.addEventListener(
-    "pointerdown",
-    event => {
-
-      event.preventDefault();
-
-      if (!timeAttackRunning) return;
-
-
-      timeAttackScore++;
-
-
-      document.getElementById(
-        "timeAttackScore"
-      ).textContent =
-        timeAttackScore;
-
-
-      if (timeAttackScore >= 30) {
-
-        finishTimeAttack();
-
-      } else {
-
-        spawnTarget();
-      }
-
-    }
-  );
-
-
-  targetArea.appendChild(target);
-}
-
-
-function finishTimeAttack() {
-
-  if (!timeAttackRunning) return;
-
-
-  const finalTime =
-    (
-      performance.now() -
-      timeAttackStart
-    ) / 1000;
-
-
-  timeAttackRunning = false;
-
-
-  clearInterval(timeAttackTimer);
-
-  timeAttackTimer = null;
-
-
-  targetArea.innerHTML = "";
-
-
-  document.getElementById(
-    "timeAttackMessage"
-  ).textContent =
-    "FINISHED! " +
-    finalTime.toFixed(2) +
-    " seconds";
-
-
-  if (
-    timeAttackBest === 0 ||
-    finalTime < timeAttackBest
-  ) {
-
-    timeAttackBest = finalTime;
-
-
-    localStorage.setItem(
-      "timeAttackBest",
-      timeAttackBest
-    );
-
-
-    document.getElementById(
-      "timeAttackBest"
-    ).textContent =
-      timeAttackBest.toFixed(
+    set
