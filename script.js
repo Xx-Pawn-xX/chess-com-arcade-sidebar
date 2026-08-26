@@ -1,60 +1,59 @@
-"use strict";
-
-
-/* =====================================================
-   TAB SYSTEM
-===================================================== */
+/* =========================
+   TABS
+========================= */
 
 let activeGame = "runner";
 
-const tabs = document.querySelectorAll(".tab");
-const games = document.querySelectorAll(".game");
+const tabs =
+  document.querySelectorAll(".tab");
+
+const games =
+  document.querySelectorAll(".game");
 
 
 tabs.forEach(tab => {
 
   tab.addEventListener("click", () => {
 
-    const gameName = tab.dataset.game;
+    const gameName =
+      tab.dataset.game;
 
-    tabs.forEach(t => {
-      t.classList.remove("active");
-    });
+    tabs.forEach(t =>
+      t.classList.remove("active")
+    );
 
-    games.forEach(game => {
-      game.classList.remove("active-game");
-    });
+    games.forEach(g =>
+      g.classList.remove("active-game")
+    );
 
     tab.classList.add("active");
 
-    const selectedGame = document.getElementById(gameName);
-
-    if (selectedGame) {
-      selectedGame.classList.add("active-game");
-    }
+    document
+      .getElementById(gameName)
+      .classList.add("active-game");
 
     activeGame = gameName;
 
-    /* Stop games when leaving them */
 
     if (gameName !== "runner") {
       stopRunner();
     }
 
-    if (gameName !== "snake") {
-      stopSnake();
+    if (gameName !== "flappy") {
+      stopFlappy();
     }
 
-    if (gameName !== "cps") {
-      stopCPS();
+    if (gameName !== "snake") {
+      clearInterval(snakeInterval);
     }
 
     if (gameName !== "timeattack") {
       stopTimeAttack();
     }
 
-    if (gameName !== "reaction") {
-      stopReaction();
+    if (gameName !== "cps") {
+      clearInterval(cpsInterval);
+      cpsRunning = false;
     }
 
   });
@@ -62,96 +61,82 @@ tabs.forEach(tab => {
 });
 
 
-/* =====================================================
+/* =========================
    CHESS RUNNER
-===================================================== */
+========================= */
 
-const runnerCanvas = document.getElementById("runnerCanvas");
-const rctx = runnerCanvas.getContext("2d");
+const runnerCanvas =
+  document.getElementById("runnerCanvas");
+
+const rctx =
+  runnerCanvas.getContext("2d");
 
 let knightY = 160;
 let velocityY = 0;
 let jumping = false;
-
 let spikes = [];
-
 let runnerScore = 0;
 let runnerRunning = false;
 
 let runnerBest =
   Number(localStorage.getItem("runnerBest")) || 0;
 
-document.getElementById("runnerBest").textContent = runnerBest;
+document.getElementById("runnerBest").textContent =
+  runnerBest;
 
-
-/* ---------- START ---------- */
 
 function startRunner() {
 
-  if (activeGame !== "runner") {
-    return;
+  if (activeGame !== "runner") return;
+
+  if (!runnerRunning) {
+
+    runnerRunning = true;
+
+    document.getElementById(
+      "jumpButton"
+    ).disabled = false;
+
+    document.getElementById(
+      "runnerStart"
+    ).textContent = "RUNNING";
+
   }
-
-  if (runnerRunning) {
-    return;
-  }
-
-  resetRunner();
-
-  runnerRunning = true;
-
-  document.getElementById("jumpButton").disabled = false;
-
-  document.getElementById("runnerStart").textContent =
-    "RUNNING...";
 
 }
 
-
-/* ---------- STOP ---------- */
 
 function stopRunner() {
 
   runnerRunning = false;
 
-  jumping = false;
-  velocityY = 0;
+  document.getElementById(
+    "jumpButton"
+  ).disabled = true;
 
-  document.getElementById("jumpButton").disabled = true;
-
-  document.getElementById("runnerStart").textContent =
-    "START RUNNER";
-
-}
-
-
-/* ---------- RESET ---------- */
-
-function resetRunner() {
-
-  knightY = 160;
-  velocityY = 0;
-  jumping = false;
-
-  spikes = [];
-
-  runnerScore = 0;
-
-  document.getElementById("runnerScore").textContent = "0";
+  document.getElementById(
+    "runnerStart"
+  ).textContent = "START";
 
 }
 
 
-/* ---------- JUMP ---------- */
+document.getElementById(
+  "runnerStart"
+).addEventListener("click", startRunner);
+
+
+document.getElementById(
+  "runnerStop"
+).addEventListener("click", stopRunner);
+
 
 function jump() {
 
   if (
     activeGame !== "runner" ||
     !runnerRunning
-  ) {
-    return;
-  }
+  ) return;
 
   if (!jumping) {
 
@@ -164,57 +149,65 @@ function jump() {
 }
 
 
-document.getElementById("runnerStart")
-  .addEventListener("click", startRunner);
-
-
-document.getElementById("runnerStop")
-  .addEventListener("click", stopRunner);
-
-
-document.getElementById("jumpButton")
-  .addEventListener("pointerdown", event => {
-
-    event.preventDefault();
-
-    jump();
-
-  });
-
-
-document.addEventListener("keydown", event => {
-
-  if (
-    activeGame === "runner" &&
-    runnerRunning &&
-    (
-      event.code === "Space" ||
-      event.code === "ArrowUp"
-    )
-  ) {
+document.getElementById(
+  "jumpButton"
+).addEventListener(
+  "pointerdown",
+  event => {
 
     event.preventDefault();
 
     jump();
 
   }
+);
 
-});
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      activeGame === "runner" &&
+      runnerRunning &&
+      (
+        event.code === "Space" ||
+        event.code === "ArrowUp"
+      )
+    ) {
+
+      event.preventDefault();
+
+      jump();
+
+    }
+
+  }
+);
 
 
-/* ---------- UPDATE ---------- */
+function resetRunner() {
+
+  knightY = 160;
+  velocityY = 0;
+  jumping = false;
+  spikes = [];
+  runnerScore = 0;
+
+  document.getElementById(
+    "runnerScore"
+  ).textContent = "0";
+
+}
+
 
 function updateRunner() {
 
   if (
     activeGame !== "runner" ||
     !runnerRunning
-  ) {
-    return;
-  }
+  ) return;
 
-
-  /* Gravity */
 
   velocityY += 0.7;
 
@@ -232,19 +225,11 @@ function updateRunner() {
   }
 
 
-  /* Score */
-
-  runnerScore++;
-
   const displayedScore =
     Math.floor(runnerScore / 5);
 
 
-  document.getElementById("runnerScore").textContent =
-    displayedScore;
-
-
-  /* Speed increases every 100 score */
+  /* Faster every 100 score */
 
   const speedLevel =
     Math.floor(displayedScore / 100);
@@ -253,26 +238,16 @@ function updateRunner() {
     6 + speedLevel;
 
 
-  /* Spike spawning */
-
   const lastSpike =
-    spikes.length > 0
-      ? spikes[spikes.length - 1]
-      : null;
+    spikes[spikes.length - 1];
 
 
-  /*
-    Minimum distance between spikes.
-    This prevents impossible double/triple spikes.
-  */
-
-  const minimumGap = 330;
-
+  /* Guaranteed spacing */
 
   if (
     (
       !lastSpike ||
-      lastSpike.x < minimumGap
+      lastSpike.x < 250
     ) &&
     Math.random() < 0.012
   ) {
@@ -281,14 +256,14 @@ function updateRunner() {
 
       x: runnerCanvas.width,
 
-      width: 20 + Math.random() * 12
+      width:
+        22 +
+        Math.random() * 10
 
     });
 
   }
 
-
-  /* Move spikes */
 
   spikes.forEach(spike => {
 
@@ -297,22 +272,16 @@ function updateRunner() {
   });
 
 
-  /* Remove old spikes */
+  spikes =
+    spikes.filter(
+      spike => spike.x > -60
+    );
 
-  spikes = spikes.filter(spike => {
-
-    return spike.x > -60;
-
-  });
-
-
-  /* Collision */
 
   for (const spike of spikes) {
 
     const knightLeft = 65;
     const knightRight = 105;
-
     const knightBottom = knightY + 40;
 
 
@@ -330,10 +299,16 @@ function updateRunner() {
 
   }
 
+
+  runnerScore++;
+
+  document.getElementById(
+    "runnerScore"
+  ).textContent =
+    displayedScore;
+
 }
 
-
-/* ---------- DRAW ---------- */
 
 function drawRunner() {
 
@@ -344,8 +319,6 @@ function drawRunner() {
     runnerCanvas.height
   );
 
-
-  /* Ground */
 
   rctx.strokeStyle = "#555";
 
@@ -361,8 +334,6 @@ function drawRunner() {
   rctx.stroke();
 
 
-  /* Knight */
-
   rctx.font = "55px Arial";
 
   rctx.fillStyle = "white";
@@ -373,8 +344,6 @@ function drawRunner() {
     knightY + 40
   );
 
-
-  /* Spikes */
 
   rctx.fillStyle = "#ff2020";
 
@@ -389,12 +358,14 @@ function drawRunner() {
     );
 
     rctx.lineTo(
-      spike.x + spike.width / 2,
+      spike.x +
+      spike.width / 2,
       160
     );
 
     rctx.lineTo(
-      spike.x + spike.width,
+      spike.x +
+      spike.width,
       200
     );
 
@@ -404,8 +375,6 @@ function drawRunner() {
 
 }
 
-
-/* ---------- GAME OVER ---------- */
 
 function gameOverRunner() {
 
@@ -424,7 +393,8 @@ function gameOverRunner() {
 
     document.getElementById(
       "runnerBest"
-    ).textContent = runnerBest;
+    ).textContent =
+      runnerBest;
 
   }
 
@@ -439,7 +409,8 @@ function gameOverRunner() {
     if (activeGame === "runner") {
 
       alert(
-        "GAME OVER!\nScore: " + score
+        "GAME OVER!\nScore: " +
+        score
       );
 
     }
@@ -449,24 +420,393 @@ function gameOverRunner() {
 }
 
 
-/* ---------- LOOP ---------- */
-
 function runnerLoop() {
 
   updateRunner();
 
-  drawRunner();
+  if (activeGame === "runner") {
+    drawRunner();
+  }
 
   requestAnimationFrame(runnerLoop);
 
 }
 
+
 runnerLoop();
 
 
-/* =====================================================
+/* =========================
+   FLAPPY PAWN
+========================= */
+
+const flappyCanvas =
+  document.getElementById("flappyCanvas");
+
+const fctx =
+  flappyCanvas.getContext("2d");
+
+let flappyRunning = false;
+let pawnY = 180;
+let pawnVelocity = 0;
+let rookPairs = [];
+let flappyScore = 0;
+
+let flappyBest =
+  Number(localStorage.getItem("flappyBest")) || 0;
+
+document.getElementById(
+  "flappyBest"
+).textContent = flappyBest;
+
+
+function startFlappy() {
+
+  if (activeGame !== "flappy") return;
+
+  flappyRunning = true;
+
+  pawnY = 180;
+
+  pawnVelocity = 0;
+
+  rookPairs = [];
+
+  flappyScore = 0;
+
+  document.getElementById(
+    "flappyScore"
+  ).textContent = "0";
+
+  document.getElementById(
+    "flapButton"
+  ).disabled = false;
+
+}
+
+
+function stopFlappy() {
+
+  flappyRunning = false;
+
+  document.getElementById(
+    "flapButton"
+  ).disabled = true;
+
+}
+
+
+function flap() {
+
+  if (
+    activeGame !== "flappy" ||
+    !flappyRunning
+  ) return;
+
+  pawnVelocity = -8;
+
+}
+
+
+document.getElementById(
+  "flappyStart"
+).addEventListener(
+  "click",
+  startFlappy
+);
+
+
+document.getElementById(
+  "flapButton"
+).addEventListener(
+  "pointerdown",
+  event => {
+
+    event.preventDefault();
+
+    flap();
+
+  }
+);
+
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      activeGame === "flappy" &&
+      flappyRunning &&
+      (
+        event.code === "Space" ||
+        event.code === "ArrowUp"
+      )
+    ) {
+
+      event.preventDefault();
+
+      flap();
+
+    }
+
+  }
+);
+
+
+function updateFlappy() {
+
+  if (
+    activeGame !== "flappy" ||
+    !flappyRunning
+  ) return;
+
+
+  pawnVelocity += 0.45;
+
+  pawnY += pawnVelocity;
+
+
+  if (
+    pawnY < 0 ||
+    pawnY + 40 >
+    flappyCanvas.height
+  ) {
+
+    gameOverFlappy();
+
+    return;
+
+  }
+
+
+  const lastPair =
+    rookPairs[rookPairs.length - 1];
+
+
+  if (
+    !lastPair ||
+    lastPair.x < 260
+  ) {
+
+    const gapSize = 145;
+
+    const gapTop =
+      70 +
+      Math.random() * 140;
+
+
+    rookPairs.push({
+
+      x: flappyCanvas.width,
+
+      gapTop: gapTop,
+
+      gapBottom:
+        gapTop + gapSize,
+
+      passed: false
+
+    });
+
+  }
+
+
+  const speed =
+    3 +
+    Math.floor(flappyScore / 10) *
+    0.4;
+
+
+  rookPairs.forEach(pair => {
+
+    pair.x -= speed;
+
+  });
+
+
+  for (const pair of rookPairs) {
+
+    const pawnLeft = 75;
+
+    const pawnRight = 115;
+
+    const pawnTop = pawnY;
+
+    const pawnBottom =
+      pawnY + 40;
+
+
+    if (
+      pawnRight > pair.x &&
+      pawnLeft < pair.x + 55
+    ) {
+
+      if (
+        pawnTop < pair.gapTop ||
+        pawnBottom > pair.gapBottom
+      ) {
+
+        gameOverFlappy();
+
+        return;
+
+      }
+
+    }
+
+
+    if (
+      !pair.passed &&
+      pair.x + 55 < pawnLeft
+    ) {
+
+      pair.passed = true;
+
+      flappyScore++;
+
+      document.getElementById(
+        "flappyScore"
+      ).textContent =
+        flappyScore;
+
+    }
+
+  }
+
+
+  rookPairs =
+    rookPairs.filter(
+      pair => pair.x > -80
+    );
+
+}
+
+
+function drawFlappy() {
+
+  fctx.clearRect(
+    0,
+    0,
+    flappyCanvas.width,
+    flappyCanvas.height
+  );
+
+
+  fctx.font = "55px Arial";
+
+  fctx.fillStyle = "white";
+
+  fctx.fillText(
+    "♟",
+    70,
+    pawnY + 40
+  );
+
+
+  fctx.fillStyle = "#ff2020";
+
+  fctx.font = "55px Arial";
+
+
+  rookPairs.forEach(pair => {
+
+    for (
+      let y = 45;
+      y < pair.gapTop;
+      y += 45
+    ) {
+
+      fctx.fillText(
+        "♜",
+        pair.x,
+        y
+      );
+
+    }
+
+
+    for (
+      let y =
+        pair.gapBottom + 45;
+
+      y <
+        flappyCanvas.height;
+
+      y += 45
+    ) {
+
+      fctx.fillText(
+        "♜",
+        pair.x,
+        y
+      );
+
+    }
+
+  });
+
+}
+
+
+function gameOverFlappy() {
+
+  const score = flappyScore;
+
+  stopFlappy();
+
+
+  if (score > flappyBest) {
+
+    flappyBest = score;
+
+    localStorage.setItem(
+      "flappyBest",
+      flappyBest
+    );
+
+    document.getElementById(
+      "flappyBest"
+    ).textContent =
+      flappyBest;
+
+  }
+
+
+  setTimeout(() => {
+
+    if (activeGame === "flappy") {
+
+      alert(
+        "GAME OVER!\nScore: " +
+        score
+      );
+
+    }
+
+  }, 50);
+
+}
+
+
+function flappyLoop() {
+
+  updateFlappy();
+
+  if (activeGame === "flappy") {
+    drawFlappy();
+  }
+
+  requestAnimationFrame(flappyLoop);
+
+}
+
+
+flappyLoop();
+
+
+/* =========================
    COLOR SORT
-===================================================== */
+========================= */
 
 const colors = [
   "red",
@@ -497,10 +837,10 @@ function startSortGame() {
     const color =
       colors[
         Math.floor(
-          Math.random() * colors.length
+          Math.random() *
+          colors.length
         )
       ];
-
 
     const ball =
       document.createElement("div");
@@ -512,22 +852,22 @@ function startSortGame() {
     ball.dataset.color = color;
 
 
-    ball.addEventListener("click", () => {
+    ball.addEventListener(
+      "click",
+      () => {
 
-      document
-        .querySelectorAll(".ball")
-        .forEach(b => {
+        document
+          .querySelectorAll(".ball")
+          .forEach(b =>
+            b.classList.remove("selected")
+          );
 
-          b.classList.remove("selected");
+        selectedBall = ball;
 
-        });
+        ball.classList.add("selected");
 
-
-      selectedBall = ball;
-
-      ball.classList.add("selected");
-
-    });
+      }
+    );
 
 
     balls.appendChild(ball);
@@ -541,57 +881,61 @@ document
   .querySelectorAll(".zone")
   .forEach(zone => {
 
-    zone.addEventListener("click", () => {
+    zone.addEventListener(
+      "click",
+      () => {
 
-      if (!selectedBall) {
-
-        document.getElementById(
-          "sortMessage"
-        ).textContent =
-          "Pick a ball first!";
-
-        return;
-
-      }
-
-
-      if (
-        selectedBall.dataset.color ===
-        zone.dataset.color
-      ) {
-
-        selectedBall.remove();
-
-        selectedBall = null;
-
-        document.getElementById(
-          "sortMessage"
-        ).textContent =
-          "Correct!";
-
-
-        if (
-          document.querySelectorAll(".ball")
-            .length === 0
-        ) {
+        if (!selectedBall) {
 
           document.getElementById(
             "sortMessage"
           ).textContent =
-            "YOU SORTED EVERYTHING!";
+            "Pick a ball first!";
+
+          return;
 
         }
 
-      } else {
 
-        document.getElementById(
-          "sortMessage"
-        ).textContent =
-          "Wrong color!";
+        if (
+          selectedBall.dataset.color ===
+          zone.dataset.color
+        ) {
+
+          selectedBall.remove();
+
+          selectedBall = null;
+
+          document.getElementById(
+            "sortMessage"
+          ).textContent =
+            "Correct!";
+
+
+          if (
+            document.querySelectorAll(
+              ".ball"
+            ).length === 0
+          ) {
+
+            document.getElementById(
+              "sortMessage"
+            ).textContent =
+              "YOU WIN!";
+
+          }
+
+        } else {
+
+          document.getElementById(
+            "sortMessage"
+          ).textContent =
+            "Wrong color!";
+
+        }
 
       }
-
-    });
+    );
 
   });
 
@@ -607,37 +951,42 @@ document.getElementById(
 startSortGame();
 
 
-/* =====================================================
+/* =========================
    TIME ATTACK
-===================================================== */
+========================= */
 
 let timeAttackScore = 0;
 let timeAttackStartTime = 0;
 let timeAttackTimer = null;
 let timeAttackRunning = false;
 
-
 let timeAttackBest =
   Number(
-    localStorage.getItem("timeAttackBest")
+    localStorage.getItem(
+      "timeAttackBest"
+    )
   ) || 0;
 
 
 const targetArea =
   document.getElementById("targetArea");
 
-const timeAttackStartButton =
-  document.getElementById("timeAttackStart");
 
+if (timeAttackBest > 0) {
 
-/* ---------- Start ---------- */
+  document.getElementById(
+    "timeAttackBest"
+  ).textContent =
+    timeAttackBest.toFixed(2) + "s";
+
+}
+
 
 function startTimeAttack() {
 
-  /* Make absolutely sure no old timer exists */
+  clearInterval(timeAttackTimer);
 
-  stopTimeAttack();
-
+  targetArea.innerHTML = "";
 
   timeAttackScore = 0;
 
@@ -651,36 +1000,19 @@ function startTimeAttack() {
     "timeAttackScore"
   ).textContent = "0";
 
-
   document.getElementById(
     "timeAttackTime"
   ).textContent = "0.00";
 
-
   document.getElementById(
     "timeAttackMessage"
-  ).textContent =
-    "GO!";
+  ).textContent = "";
 
-
-  timeAttackStartButton.textContent =
-    "RESTART";
-
-
-  spawnTarget();
-
-
-  /*
-    Update the displayed time frequently.
-  */
 
   timeAttackTimer =
     setInterval(() => {
 
-      if (!timeAttackRunning) {
-        return;
-      }
-
+      if (!timeAttackRunning) return;
 
       const elapsed =
         (
@@ -688,25 +1020,30 @@ function startTimeAttack() {
           timeAttackStartTime
         ) / 1000;
 
-
       document.getElementById(
         "timeAttackTime"
       ).textContent =
         elapsed.toFixed(2);
 
-    }, 50);
+    }, 30);
+
+
+  spawnTarget();
 
 }
 
 
-/* ---------- Spawn Target ---------- */
+document.getElementById(
+  "timeAttackStart"
+).addEventListener(
+  "click",
+  startTimeAttack
+);
+
 
 function spawnTarget() {
 
-  if (!timeAttackRunning) {
-    return;
-  }
-
+  if (!timeAttackRunning) return;
 
   targetArea.innerHTML = "";
 
@@ -714,45 +1051,33 @@ function spawnTarget() {
   const target =
     document.createElement("div");
 
-
   target.className = "target";
 
 
-  /*
-    Use the actual target area dimensions.
-    This works on desktop AND mobile.
-  */
-
-  const areaWidth =
-    targetArea.clientWidth;
-
-  const areaHeight =
-    targetArea.clientHeight;
-
-
-  const targetSize = 35;
-
+  const size = 40;
 
   const maxX =
     Math.max(
       0,
-      areaWidth - targetSize
+      targetArea.clientWidth - size
     );
-
 
   const maxY =
     Math.max(
       0,
-      areaHeight - targetSize
+      targetArea.clientHeight - size
     );
 
 
   target.style.left =
-    Math.random() * maxX + "px";
-
+    Math.random() *
+    maxX +
+    "px";
 
   target.style.top =
-    Math.random() * maxY + "px";
+    Math.random() *
+    maxY +
+    "px";
 
 
   target.addEventListener(
@@ -761,12 +1086,7 @@ function spawnTarget() {
 
       event.preventDefault();
 
-      event.stopPropagation();
-
-
-      if (!timeAttackRunning) {
-        return;
-      }
+      if (!timeAttackRunning) return;
 
 
       timeAttackScore++;
@@ -778,7 +1098,9 @@ function spawnTarget() {
         timeAttackScore;
 
 
-      if (timeAttackScore >= 30) {
+      if (
+        timeAttackScore >= 30
+      ) {
 
         finishTimeAttack();
 
@@ -797,13 +1119,9 @@ function spawnTarget() {
 }
 
 
-/* ---------- Finish ---------- */
-
 function finishTimeAttack() {
 
-  if (!timeAttackRunning) {
-    return;
-  }
+  if (!timeAttackRunning) return;
 
 
   const finalTime =
@@ -815,11 +1133,7 @@ function finishTimeAttack() {
 
   timeAttackRunning = false;
 
-
   clearInterval(timeAttackTimer);
-
-  timeAttackTimer = null;
-
 
   targetArea.innerHTML = "";
 
@@ -833,13 +1147,9 @@ function finishTimeAttack() {
   document.getElementById(
     "timeAttackMessage"
   ).textContent =
-    "FINISHED! " +
+    "FINISHED IN " +
     finalTime.toFixed(2) +
-    " seconds";
-
-
-  timeAttackStartButton.textContent =
-    "PLAY AGAIN";
+    " SECONDS!";
 
 
   if (
@@ -849,24 +1159,20 @@ function finishTimeAttack() {
 
     timeAttackBest = finalTime;
 
-
     localStorage.setItem(
       "timeAttackBest",
       timeAttackBest
     );
 
-
     document.getElementById(
       "timeAttackBest"
     ).textContent =
-      timeAttackBest.toFixed(2) + "s";
+      finalTime.toFixed(2) + "s";
 
   }
 
 }
 
-
-/* ---------- Stop ---------- */
 
 function stopTimeAttack() {
 
@@ -874,34 +1180,14 @@ function stopTimeAttack() {
 
   clearInterval(timeAttackTimer);
 
-  timeAttackTimer = null;
-
   targetArea.innerHTML = "";
 
 }
 
 
-/* ---------- Best ---------- */
-
-if (timeAttackBest > 0) {
-
-  document.getElementById(
-    "timeAttackBest"
-  ).textContent =
-    timeAttackBest.toFixed(2) + "s";
-
-}
-
-
-timeAttackStartButton.addEventListener(
-  "click",
-  startTimeAttack
-);
-
-
-/* =====================================================
+/* =========================
    SNAKE
-===================================================== */
+========================= */
 
 const snakeCanvas =
   document.getElementById("snakeCanvas");
@@ -909,17 +1195,12 @@ const snakeCanvas =
 const sctx =
   snakeCanvas.getContext("2d");
 
-
 let snake = null;
 let food = null;
-
 let snakeDX = 20;
 let snakeDY = 0;
-
 let snakeInterval = null;
 
-
-/* ---------- Food ---------- */
 
 function randomFood() {
 
@@ -940,12 +1221,9 @@ function randomFood() {
 }
 
 
-/* ---------- Start ---------- */
-
 function startSnake() {
 
   clearInterval(snakeInterval);
-
 
   snake = [
     {
@@ -954,9 +1232,7 @@ function startSnake() {
     }
   ];
 
-
   food = randomFood();
-
 
   snakeDX = 20;
   snakeDY = 0;
@@ -970,8 +1246,6 @@ function startSnake() {
   drawSnake();
 
 
-  /* Slower snake */
-
   snakeInterval =
     setInterval(
       updateSnake,
@@ -981,24 +1255,19 @@ function startSnake() {
 }
 
 
-/* ---------- Stop ---------- */
-
-function stopSnake() {
-
-  clearInterval(snakeInterval);
-
-  snakeInterval = null;
-
-}
+document.getElementById(
+  "snakeStart"
+).addEventListener(
+  "click",
+  startSnake
+);
 
 
-/* ---------- Direction ---------- */
+function changeSnakeDirection(
+  direction
+) {
 
-function changeSnakeDirection(direction) {
-
-  if (!snake) {
-    return;
-  }
+  if (!snake) return;
 
 
   if (
@@ -1065,40 +1334,26 @@ document
   });
 
 
-document.getElementById(
-  "snakeStart"
-).addEventListener(
-  "click",
-  startSnake
-);
-
-
-/* ---------- Update ---------- */
-
 function updateSnake() {
 
   if (
     activeGame !== "snake" ||
     !snake
-  ) {
-
-    return;
-
-  }
+  ) return;
 
 
   const head = {
 
     x:
-      snake[0].x + snakeDX,
+      snake[0].x +
+      snakeDX,
 
     y:
-      snake[0].y + snakeDY
+      snake[0].y +
+      snakeDY
 
   };
 
-
-  /* Wall collision */
 
   if (
     head.x < 0 ||
@@ -1107,23 +1362,30 @@ function updateSnake() {
     head.y >= 400
   ) {
 
-    snakeGameOver();
+    clearInterval(snakeInterval);
+
+    snake = null;
+
+    alert("GAME OVER!");
 
     return;
 
   }
 
 
-  /* Self collision */
-
   if (
-    snake.some(part =>
-      part.x === head.x &&
-      part.y === head.y
+    snake.some(
+      part =>
+        part.x === head.x &&
+        part.y === head.y
     )
   ) {
 
-    snakeGameOver();
+    clearInterval(snakeInterval);
+
+    snake = null;
+
+    alert("GAME OVER!");
 
     return;
 
@@ -1133,15 +1395,12 @@ function updateSnake() {
   snake.unshift(head);
 
 
-  /* Food */
-
   if (
     head.x === food.x &&
     head.y === food.y
   ) {
 
     food = randomFood();
-
 
     document.getElementById(
       "snakeScore"
@@ -1160,31 +1419,6 @@ function updateSnake() {
 }
 
 
-/* ---------- Game Over ---------- */
-
-function snakeGameOver() {
-
-  stopSnake();
-
-  snake = null;
-
-  drawSnake();
-
-  setTimeout(() => {
-
-    if (activeGame === "snake") {
-
-      alert("GAME OVER!");
-
-    }
-
-  }, 50);
-
-}
-
-
-/* ---------- Draw ---------- */
-
 function drawSnake() {
 
   sctx.clearRect(
@@ -1195,9 +1429,7 @@ function drawSnake() {
   );
 
 
-  if (!snake || !food) {
-    return;
-  }
+  if (!snake || !food) return;
 
 
   sctx.fillStyle = "#ff2020";
@@ -1217,7 +1449,6 @@ function drawSnake() {
 
   sctx.fillStyle = "white";
 
-
   sctx.fillRect(
     food.x,
     food.y,
@@ -1228,28 +1459,16 @@ function drawSnake() {
 }
 
 
-/* =====================================================
-   REACTION TEST
-===================================================== */
+/* =========================
+   REACTION
+========================= */
 
 let reactionReady = false;
 let reactionStartTime = 0;
 let reactionTimer = null;
 
-
 const reactionBox =
   document.getElementById("reactionBox");
-
-
-function stopReaction() {
-
-  reactionReady = false;
-
-  clearTimeout(reactionTimer);
-
-  reactionTimer = null;
-
-}
 
 
 document.getElementById(
@@ -1258,41 +1477,36 @@ document.getElementById(
   "click",
   () => {
 
-    stopReaction();
-
+    reactionReady = false;
 
     reactionBox.style.background =
       "#222";
-
 
     reactionBox.textContent =
       "WAIT...";
 
 
+    clearTimeout(reactionTimer);
+
+
     reactionTimer =
       setTimeout(() => {
 
-        if (activeGame !== "reaction") {
-          return;
-        }
-
-
         reactionReady = true;
-
 
         reactionStartTime =
           performance.now();
 
-
         reactionBox.style.background =
           "#ff2020";
-
 
         reactionBox.textContent =
           "CLICK!";
 
-
-      }, 1000 + Math.random() * 3000);
+      },
+      1000 +
+      Math.random() * 3000
+    );
 
   }
 );
@@ -1302,52 +1516,35 @@ reactionBox.addEventListener(
   "pointerdown",
   () => {
 
-    if (!reactionReady) {
-      return;
-    }
+    if (!reactionReady) return;
 
 
-    const reactionTime =
+    const time =
       performance.now() -
       reactionStartTime;
 
 
     reactionReady = false;
 
-
     reactionBox.style.background =
       "#222";
 
-
     reactionBox.textContent =
-      Math.round(reactionTime) +
+      Math.round(time) +
       " ms";
 
   }
 );
 
 
-/* =====================================================
-   CPS TEST
-===================================================== */
+/* =========================
+   CPS
+========================= */
 
 let cpsRunning = false;
 let cpsClicks = 0;
 let cpsTime = 5;
 let cpsInterval = null;
-
-
-function stopCPS() {
-
-  clearInterval(cpsInterval);
-
-  cpsInterval = null;
-
-  cpsRunning = false;
-
-  cpsTime = 5;
-
-}
 
 
 document.getElementById(
@@ -1382,14 +1579,16 @@ document.getElementById(
 
       document.getElementById(
         "cpsResult"
-      ).textContent =
-        "0";
+      ).textContent = "0";
 
 
       document.getElementById(
         "cpsButton"
       ).textContent =
         "CLICK FAST!";
+
+
+      clearInterval(cpsInterval);
 
 
       cpsInterval =
@@ -1407,8 +1606,6 @@ document.getElementById(
           if (cpsTime <= 0) {
 
             clearInterval(cpsInterval);
-
-            cpsInterval = null;
 
             cpsRunning = false;
 
@@ -1430,10 +1627,10 @@ document.getElementById(
 
         }, 1000);
 
+
     } else {
 
       cpsClicks++;
-
 
       document.getElementById(
         "cpsClicks"
@@ -1446,9 +1643,9 @@ document.getElementById(
 );
 
 
-/* =====================================================
+/* =========================
    MEMORY
-===================================================== */
+========================= */
 
 const memorySymbols = [
 
@@ -1462,7 +1659,6 @@ const memorySymbols = [
   "🚀"
 
 ];
-
 
 let flipped = [];
 let memoryLocked = false;
@@ -1478,19 +1674,16 @@ function startMemory() {
 
   board.innerHTML = "";
 
-  flipped = [];
 
-  memoryLocked = false;
-
-
-  let cards = [
+  const cards = [
     ...memorySymbols,
     ...memorySymbols
   ];
 
 
   cards.sort(
-    () => Math.random() - 0.5
+    () =>
+      Math.random() - 0.5
   );
 
 
@@ -1504,12 +1697,9 @@ function startMemory() {
       "memory-card hidden";
 
 
-    card.textContent =
-      symbol;
+    card.textContent = symbol;
 
-
-    card.dataset.symbol =
-      symbol;
+    card.dataset.symbol = symbol;
 
 
     card.addEventListener(
@@ -1522,6 +1712,11 @@ function startMemory() {
 
   });
 
+
+  flipped = [];
+
+  memoryLocked = false;
+
 }
 
 
@@ -1530,21 +1725,11 @@ function flipCard() {
   if (
     memoryLocked ||
     !this.classList.contains("hidden") ||
-    flipped.length >= 2
-  ) {
+    flipped.length === 2
+  ) return;
 
-    return;
-
-  }
-
-
-  /*
-    Remove hidden.
-    This makes the actual emoji visible.
-  */
 
   this.classList.remove("hidden");
-
 
   flipped.push(this);
 
@@ -1554,24 +1739,22 @@ function flipCard() {
     memoryLocked = true;
 
 
-    const first = flipped[0];
-    const second = flipped[1];
-
-
     setTimeout(() => {
 
       if (
-        first.dataset.symbol ===
-        second.dataset.symbol
+        flipped[0].dataset.symbol ===
+        flipped[1].dataset.symbol
       ) {
 
-        first.classList.add("matched");
-        second.classList.add("matched");
+        flipped.forEach(card =>
+          card.classList.add("matched")
+        );
 
       } else {
 
-        first.classList.add("hidden");
-        second.classList.add("hidden");
+        flipped.forEach(card =>
+          card.classList.add("hidden")
+        );
 
       }
 
@@ -1580,7 +1763,7 @@ function flipCard() {
 
       memoryLocked = false;
 
-    }, 650);
+    }, 700);
 
   }
 
@@ -1598,9 +1781,9 @@ document.getElementById(
 startMemory();
 
 
-/* =====================================================
+/* =========================
    TIC TAC TOE
-===================================================== */
+========================= */
 
 let tttPlayer = "X";
 let tttGameActive = true;
@@ -1649,7 +1832,6 @@ function resetTTT() {
     const cell =
       document.createElement("div");
 
-
     cell.className =
       "ttt-cell";
 
@@ -1672,11 +1854,7 @@ function playTTT() {
   if (
     !tttGameActive ||
     this.textContent !== ""
-  ) {
-
-    return;
-
-  }
+  ) return;
 
 
   this.textContent =
@@ -1692,18 +1870,12 @@ function playTTT() {
 
 
   const won =
-    winPatterns.some(pattern => {
-
-      return pattern.every(index => {
-
-        return (
-          cells[index].textContent ===
-          tttPlayer
-        );
-
-      });
-
-    });
+    winPatterns.some(pattern =>
+      pattern.every(index =>
+        cells[index].textContent ===
+        tttPlayer
+      )
+    );
 
 
   if (won) {
@@ -1711,7 +1883,8 @@ function playTTT() {
     document.getElementById(
       "tttStatus"
     ).textContent =
-      tttPlayer + " WINS!";
+      tttPlayer +
+      " WINS!";
 
 
     tttGameActive = false;
@@ -1722,8 +1895,9 @@ function playTTT() {
 
 
   const full =
-    cells.every(cell =>
-      cell.textContent !== ""
+    cells.every(
+      cell =>
+        cell.textContent !== ""
     );
 
 
@@ -1751,7 +1925,8 @@ function playTTT() {
   document.getElementById(
     "tttStatus"
   ).textContent =
-    tttPlayer + "'s turn";
+    tttPlayer +
+    "'s turn";
 
 }
 
