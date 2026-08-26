@@ -1,0 +1,376 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.arcade {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  min-height: 100vh;
+  padding: 12px;
+  background:
+    linear-gradient(
+      180deg,
+      #111 0%,
+      #050505 100%
+    );
+}
+
+header {
+  text-align: center;
+  border-bottom: 1px solid #ff2020;
+  padding-bottom: 10px;
+}
+
+h1 {
+  color: #ff3030;
+  margin: 5px 0;
+  text-shadow: 0 0 10px #ff0000;
+  font-size: 1.7rem;
+}
+
+header p {
+  margin: 0;
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 12px 0;
+}
+
+.tab {
+  flex: 0 0 auto;
+  border: 1px solid #333;
+  background: #151515;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.tab:hover,
+.tab.active {
+  background: #ff2020;
+  border-color: #ff2020;
+  box-shadow: 0 0 10px #ff2020;
+}
+
+.game {
+  display: none;
+  animation: appear 0.2s ease;
+}
+
+.active-game {
+  display: block;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.game-title {
+  text-align: center;
+  color: #ff4040;
+  font-weight: bold;
+  margin: 10px 0;
+  font-size: 1.2rem;
+}
+
+.score-row,
+.cps-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.small-text {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.main-button,
+.controls button {
+  background: #161616;
+  color: white;
+  border: 1px solid #ff3030;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.main-button {
+  display: block;
+  margin: 12px auto;
+  width: min(200px, 100%);
+}
+
+.main-button:hover,
+.controls button:hover {
+  background: #ff2020;
+  box-shadow: 0 0 10px #ff0000;
+}
+
+.big-game-button {
+  width: 100%;
+  height: 180px;
+  background: #151515;
+  color: white;
+  border: 2px solid #ff3030;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 10px;
+}
+
+
+/* COLOR SORT */
+
+#balls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  min-height: 90px;
+}
+
+.ball {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: grab;
+  box-shadow: 0 0 10px rgba(255,255,255,.25);
+}
+
+.sort-zones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.zone {
+  min-height: 75px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #555;
+  font-size: 0.8rem;
+}
+
+.red-zone { border-color: red; }
+.blue-zone { border-color: #3399ff; }
+.green-zone { border-color: #22cc66; }
+.yellow-zone { border-color: #e6d000; }
+
+
+/* EMOJI */
+
+.emoji-machine {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 25px 0;
+}
+
+.emoji-slot {
+  width: 30%;
+  aspect-ratio: 1;
+  background: #151515;
+  border: 1px solid #ff3030;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+
+/* REACTION */
+
+#reactionBox {
+  height: 180px;
+  border-radius: 12px;
+  background: #161616;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #333;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+
+/* AIM */
+
+#aimArea,
+#bubbleArea {
+  height: 300px;
+  position: relative;
+  background: #101010;
+  border: 1px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#target {
+  width: 42px;
+  height: 42px;
+  background: #ff2020;
+  border-radius: 50%;
+  position: absolute;
+  display: none;
+  box-shadow: 0 0 15px #ff0000;
+  cursor: pointer;
+}
+
+
+/* MEMORY */
+
+#memoryBoard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.memory-card {
+  aspect-ratio: 1;
+  background: #181818;
+  border: 1px solid #ff3030;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+
+.memory-card.hidden {
+  font-size: 0;
+}
+
+
+/* 2048 */
+
+#board2048 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  background: #222;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.tile2048 {
+  aspect-ratio: 1;
+  background: #333;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+
+/* TIC TAC TOE */
+
+#tttBoard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 350px;
+  margin: auto;
+  gap: 5px;
+}
+
+.ttt-cell {
+  aspect-ratio: 1;
+  background: #151515;
+  border: 1px solid #ff3030;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+
+/* BUBBLE */
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: #ff2020;
+  box-shadow: 0 0 12px #ff0000;
+  cursor: pointer;
+}
+
+
+/* MAZE */
+
+#mazeBoard {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  background: #333;
+  padding: 2px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.maze-cell {
+  aspect-ratio: 1;
+  background: #111;
+}
+
+.wall {
+  background: #444;
+}
+
+.player {
+  background: #ff2020;
+}
+
+.exit {
+  background: #22cc66;
+}
+
+.controls {
+  text-align: center;
+  margin: 10px;
+}
+
+.controls div {
+  margin-top: 5px;
+}
