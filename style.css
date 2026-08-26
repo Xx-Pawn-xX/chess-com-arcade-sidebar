@@ -1,261 +1,248 @@
 * {
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   margin: 0;
-  background: #050505;
+  background: #090909;
   color: white;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .arcade {
   width: 100%;
-  max-width: 900px;
+  max-width: 700px;
   margin: auto;
   min-height: 100vh;
+  background: #111;
   padding: 12px;
-  background:
-    linear-gradient(
-      180deg,
-      #111 0%,
-      #050505 100%
-    );
+  border-left: 2px solid #ff2020;
+  border-right: 2px solid #ff2020;
 }
 
 header {
   text-align: center;
-  border-bottom: 1px solid #ff2020;
+  border-bottom: 2px solid #ff2020;
   padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
-h1 {
+header h1 {
+  margin: 0;
   color: #ff3030;
-  margin: 5px 0;
-  text-shadow: 0 0 10px #ff0000;
-  font-size: 1.7rem;
+  font-size: 30px;
 }
 
 header p {
-  margin: 0;
+  margin: 5px 0 0;
   color: #aaa;
-  font-size: 0.8rem;
+  font-size: 14px;
 }
 
 .tabs {
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 12px 0;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 
 .tab {
-  flex: 0 0 auto;
-  border: 1px solid #333;
-  background: #151515;
+  background: #222;
   color: white;
+  border: 1px solid #444;
   padding: 8px 10px;
-  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.75rem;
+  border-radius: 5px;
+  font-size: 13px;
 }
 
 .tab:hover,
 .tab.active {
   background: #ff2020;
   border-color: #ff2020;
-  box-shadow: 0 0 10px #ff2020;
 }
 
 .game {
   display: none;
-  animation: appear 0.2s ease;
+  text-align: center;
+  animation: fade 0.2s ease;
 }
 
 .active-game {
   display: block;
 }
 
-@keyframes appear {
+@keyframes fade {
   from {
     opacity: 0;
-    transform: translateY(5px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.game-title {
-  text-align: center;
-  color: #ff4040;
-  font-weight: bold;
+.game h2 {
+  color: #ff3030;
   margin: 10px 0;
-  font-size: 1.2rem;
 }
 
-.score-row,
-.cps-stats {
+.stats {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
-  font-size: 0.85rem;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 8px;
 }
 
-.small-text {
-  text-align: center;
+.hint {
   color: #aaa;
-  font-size: 0.8rem;
+  font-size: 14px;
 }
 
 .main-button,
-.controls button {
-  background: #161616;
+.big-button {
+  background: #ff2020;
   color: white;
-  border: 1px solid #ff3030;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
+  border: none;
+  padding: 12px 22px;
+  margin: 10px;
+  border-radius: 6px;
   font-weight: bold;
-}
-
-.main-button {
-  display: block;
-  margin: 12px auto;
-  width: min(200px, 100%);
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .main-button:hover,
-.controls button:hover {
-  background: #ff2020;
-  box-shadow: 0 0 10px #ff0000;
+.big-button:hover {
+  background: #ff5050;
 }
 
-.big-game-button {
-  width: 100%;
-  height: 180px;
-  background: #151515;
-  color: white;
-  border: 2px solid #ff3030;
-  border-radius: 12px;
-  font-size: 1.3rem;
-  cursor: pointer;
+.big-button {
+  width: 80%;
+  min-height: 100px;
+  font-size: 20px;
 }
 
 canvas {
+  max-width: 100%;
+  background: #050505;
+  border: 2px solid #333;
+  border-radius: 5px;
   display: block;
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-  background: #0d0d0d;
-  border: 1px solid #333;
-  border-radius: 10px;
+  margin: 10px auto;
 }
-
 
 /* COLOR SORT */
 
 #balls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
   min-height: 90px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px;
 }
 
 .ball {
-  width: 38px;
-  height: 38px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  cursor: grab;
-  box-shadow: 0 0 10px rgba(255,255,255,.25);
+  cursor: pointer;
+  border: 3px solid transparent;
+}
+
+.ball.selected {
+  border-color: white;
+  transform: scale(1.15);
 }
 
 .sort-zones {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+  max-width: 400px;
+  margin: auto;
 }
 
 .zone {
-  min-height: 75px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed #555;
-  font-size: 0.8rem;
+  color: white;
+  border: 2px solid #555;
+  padding: 15px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.red-zone { border-color: red; }
-.blue-zone { border-color: #3399ff; }
-.green-zone { border-color: #22cc66; }
-.yellow-zone { border-color: #e6d000; }
+.red-zone {
+  background: #9b111e;
+}
 
+.blue-zone {
+  background: #124d9b;
+}
 
-/* EMOJI */
+.green-zone {
+  background: #167c3a;
+}
 
-.emoji-machine {
+.yellow-zone {
+  background: #a88900;
+}
+
+/* LUCKY */
+
+.slots {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin: 25px 0;
+  margin: 20px;
 }
 
-.emoji-slot {
-  width: 30%;
-  aspect-ratio: 1;
-  background: #151515;
-  border: 1px solid #ff3030;
-  border-radius: 10px;
+.slot {
+  width: 75px;
+  height: 75px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  background: #222;
+  border: 2px solid #ff2020;
+  border-radius: 8px;
+  font-size: 40px;
 }
 
+/* SNAKE */
+
+.controls {
+  margin: 10px auto;
+}
+
+.controls button {
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  font-size: 20px;
+  padding: 10px 18px;
+  margin: 3px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 /* REACTION */
 
 #reactionBox {
+  width: min(400px, 90%);
   height: 180px;
-  border-radius: 12px;
-  background: #161616;
+  margin: 15px auto;
+  background: #222;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #333;
-  font-size: 1.3rem;
+  font-size: 25px;
+  border-radius: 8px;
   cursor: pointer;
+  user-select: none;
 }
-
-
-/* AIM */
-
-#aimArea,
-#bubbleArea {
-  height: 300px;
-  position: relative;
-  background: #101010;
-  border: 1px solid #333;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-#target {
-  width: 42px;
-  height: 42px;
-  background: #ff2020;
-  border-radius: 50%;
-  position: absolute;
-  display: none;
-  box-shadow: 0 0 15px #ff0000;
-  cursor: pointer;
-}
-
 
 /* MEMORY */
 
@@ -263,114 +250,69 @@ canvas {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
+  max-width: 400px;
+  margin: 15px auto;
 }
 
 .memory-card {
   aspect-ratio: 1;
-  background: #181818;
-  border: 1px solid #ff3030;
-  border-radius: 8px;
+  background: #222;
+  border: 2px solid #ff2020;
+  border-radius: 6px;
+  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.7rem;
   cursor: pointer;
 }
 
 .memory-card.hidden {
-  font-size: 0;
-}
-
-
-/* 2048 */
-
-#board2048 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  background: #222;
-  padding: 5px;
-  border-radius: 8px;
-}
-
-.tile2048 {
-  aspect-ratio: 1;
+  color: transparent;
   background: #333;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
 }
 
+.memory-card.matched {
+  visibility: hidden;
+}
 
 /* TIC TAC TOE */
 
 #tttBoard {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  max-width: 350px;
-  margin: auto;
+  grid-template-columns: repeat(3, 90px);
   gap: 5px;
+  justify-content: center;
+  margin: 15px auto;
 }
 
 .ttt-cell {
-  aspect-ratio: 1;
-  background: #151515;
-  border: 1px solid #ff3030;
+  width: 90px;
+  height: 90px;
+  background: #222;
+  border: 2px solid #ff2020;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 45px;
   cursor: pointer;
 }
 
+@media (max-width: 500px) {
+  .arcade {
+    padding: 8px;
+  }
 
-/* BUBBLE */
+  header h1 {
+    font-size: 25px;
+  }
 
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: #ff2020;
-  box-shadow: 0 0 12px #ff0000;
-  cursor: pointer;
-}
+  .tab {
+    padding: 7px;
+    font-size: 12px;
+  }
 
-
-/* MAZE */
-
-#mazeBoard {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 2px;
-  background: #333;
-  padding: 2px;
-  max-width: 400px;
-  margin: auto;
-}
-
-.maze-cell {
-  aspect-ratio: 1;
-  background: #111;
-}
-
-.wall {
-  background: #444;
-}
-
-.player {
-  background: #ff2020;
-}
-
-.exit {
-  background: #22cc66;
-}
-
-.controls {
-  text-align: center;
-  margin: 10px;
-}
-
-.controls div {
-  margin-top: 5px;
+  #snakeCanvas {
+    width: 100%;
+    height: auto;
+  }
 }
