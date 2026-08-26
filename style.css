@@ -227,6 +227,11 @@ canvas {
   color: transparent;
 }
 
+.memory-card.hidden::after {
+  content: "?";
+  color: white;
+}
+
 .memory-card.matched {
   border-color: #ff2020;
 }
