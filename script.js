@@ -917,7 +917,7 @@ function startSnake() {
   snakeInterval =
     setInterval(
       updateSnake,
-      120
+      160
     );
 
 }
