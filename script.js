@@ -91,7 +91,7 @@ function updateRunner() {
 const lastSpike = spikes[spikes.length - 1];
 
 if (
-  (!lastSpike || lastSpike.x < 330) &&
+  (!lastSpike || lastSpike.x < 100) &&
   Math.random() < 0.012
 ) {
   spikes.push({
